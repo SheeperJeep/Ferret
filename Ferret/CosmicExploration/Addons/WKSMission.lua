@@ -133,7 +133,7 @@ function WKSMission:get_best_available_mission(blacklist)
     for index, mission in pairs(missions.missions) do
         Logger:info('Checking mission: ' .. mission.name:get())
         if not blacklist:has_id(mission.id) then
-            Logger:info('Mission \'' .. mission.name:get() .. '\' is not blacklsited.')
+            Logger:info('Mission \'' .. mission.name:get() .. '\' is not blacklisted.')
             local r = {}
             for _, reward in pairs(mission.exp_reward) do
                 r[reward.tier] = reward.amount
@@ -141,7 +141,7 @@ function WKSMission:get_best_available_mission(blacklist)
 
             rewards[index] = r
         else
-            Logger:info('Mission \'' .. mission.name:get() .. '\' is blacklsited.')
+            Logger:info('Mission \'' .. mission.name:get() .. '\' is blacklisted.')
         end
     end
 
