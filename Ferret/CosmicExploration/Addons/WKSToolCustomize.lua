@@ -27,4 +27,13 @@ function WKSToolCustomize:get_exp_4()
     return self:get_exp(5)
 end
 
+function WKSToolCustomize:get_relic_ranks()
+    local ranks = {}
+    for index = 2, 12 do
+        ranks[index + 6] = Ferret:parse_number(GetNodeText(self.key, 28, index, 5))
+    end
+
+    return ranks
+end
+
 return WKSToolCustomize()

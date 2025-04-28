@@ -21,8 +21,8 @@ function StellarMissions:new()
     self.missions_to_medicate_on = {}
     self.medicine_to_drink = nil
     self.food_to_eat = nil
-    self.job = nil
-    self.template_version = Version(2, 2, 1)
+    self.job = GetClassJobId()
+    self.template_version = Version(2, 2, 2)
 
     self.cosmic_exploration = CosmicExploration()
 
@@ -46,6 +46,7 @@ function StellarMissions:slow_mode()
 
     Mission.wait_timers.pre_synthesize = 1
     Mission.wait_timers.post_synthesize = 1
+    Mission.last_crafting_action_threshold = 10
 end
 
 function StellarMissions:create_job_list(callback)
@@ -62,12 +63,6 @@ end
 
 function StellarMissions:setup()
     Logger:info('Stellar missions ' .. self.template_version:to_string())
-
-    if self.job == nil then
-        Logger:error('Job not set')
-        Logger:info('Please set `stellar_missions.job = Jobs.Carpenter` etc.')
-        return false
-    end
 
     self.cosmic_exploration:set_job(self.job)
 

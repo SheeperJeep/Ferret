@@ -10,6 +10,8 @@ Mission.wait_timers = {
     post_synthesize = 0,
 }
 
+Mission.last_crafting_action_threshold = 5
+
 function Mission:new(id, name, job, class)
     self.id = id
     self.name = name
@@ -124,7 +126,7 @@ function Mission:single_recipe()
     repeat
         if WKSRecipeNotebook:is_ready() then
             if GetItemCount(48233) <= 0 then
-                return false
+                return self:is_complete()
             end
 
             Ferret:wait(Mission.wait_timers.pre_synthesize)
@@ -136,14 +138,14 @@ function Mission:single_recipe()
             timer:start()
         end
 
-        if timer:seconds() >= 5 then
-            return false
+        if timer:seconds() >= Mission.last_crafting_action_threshold then
+            return self:is_complete()
         end
 
         Ferret:wait(0.5)
     until self:is_complete()
 
-    return true
+    return self:is_complete()
 end
 
 function Mission:multi_recipe()
@@ -152,9 +154,8 @@ function Mission:multi_recipe()
     timer:start()
 
     repeat
-        Logger:debug('Repeat Start')
         if GetItemCount(48233) <= 0 then
-            return false
+            return self:is_complete()
         end
 
         for index, count in pairs(self.multi_craft_config) do
@@ -163,8 +164,8 @@ function Mission:multi_recipe()
                     timer:start()
                 end
 
-                if timer:seconds() >= 5 then
-                    return false
+                if timer:seconds() >= Mission.last_crafting_action_threshold then
+                    return self:is_complete()
                 end
 
                 Ferret:wait(0.5)
@@ -182,8 +183,8 @@ function Mission:multi_recipe()
                             timer:start()
                         end
 
-                        if timer:seconds() >= 5 then
-                            return false
+                        if timer:seconds() >= Mission.last_crafting_action_threshold then
+                            return self:is_complete()
                         end
 
                         Ferret:wait(0.5)
@@ -203,6 +204,8 @@ function Mission:multi_recipe()
             end
         end
     until self:is_complete()
+
+    return self:is_complete()
 end
 
 function Mission:handle()

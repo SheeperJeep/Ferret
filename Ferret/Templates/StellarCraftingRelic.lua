@@ -10,9 +10,29 @@ require('Ferret/CosmicExploration/CosmicExploration')
 StellarCraftingRelic = Ferret:extend()
 function StellarCraftingRelic:new()
     StellarCraftingRelic.super.new(self, 'Stellar Crafting Relic')
+    self.job_order = {
+        Jobs.Carpenter,
+        Jobs.Blacksmith,
+        Jobs.Alchemist,
+        Jobs.Armorer,
+        Jobs.Goldsmith,
+        Jobs.Leatherworker,
+        Jobs.Weaver,
+        Jobs.Culinarian,
+    }
 
-    self.job = nil
-    self.template_version = Version(0, 3, 0)
+    self.relic_ranks = {
+        [Jobs.Carpenter] = 1,
+        [Jobs.Blacksmith] = 1,
+        [Jobs.Armorer] = 1,
+        [Jobs.Goldsmith] = 1,
+        [Jobs.Leatherworker] = 1,
+        [Jobs.Weaver] = 1,
+        [Jobs.Alchemist] = 1,
+        [Jobs.Culinarian] = 1,
+    }
+
+    self.template_version = Version(0, 4, 1)
 
     self.cosmic_exploration = CosmicExploration()
 
@@ -40,16 +60,11 @@ function StellarCraftingRelic:slow_mode()
 
     Mission.wait_timers.pre_synthesize = 1
     Mission.wait_timers.post_synthesize = 1
+    Mission.last_crafting_action_threshold = 10
 end
 
 function StellarCraftingRelic:setup()
     Logger:info(self.name .. ': ' .. self.template_version:to_string())
-
-    if self.job == nil then
-        Logger:error('Job not set')
-        Logger:info('Please set `stellar_crafting_relic.job = Jobs.Carpenter` etc.')
-        return false
-    end
 
     self.cosmic_exploration:set_job(self.job)
 
@@ -63,10 +78,34 @@ function StellarCraftingRelic:loop()
 
     WKSHud:wait_until_ready()
 
+    WKSHud:open_cosmic_research()
+    WKSToolCustomize:wait_until_ready()
+    Ferret:wait(1)
+
+    local maxed = true
+    self.relic_ranks = WKSToolCustomize:get_relic_ranks()
+    for _, job in ipairs(self.job_order) do
+        local rank = self.relic_ranks[job]
+        if rank < 9 then
+            maxed = false
+            yield('/gearset change ' .. Jobs.get_name(job))
+            self.cosmic_exploration:set_job(job)
+            self.blacklist = MissionList()
+            Ferret:wait(1)
+            break
+        end
+    end
+
     Ferret:wait(self.wait_timers.pre_open_mission_list)
     WKSMission:open_basic_missions()
     Ferret:wait(self.wait_timers.post_open_mission_list)
+    if maxed then
+        Logger:info('You\'re all done!')
+        self:stop()
+        return
+    end
 
+    -- Close and open to refresh exp bars
     WKSHud:close_cosmic_research()
     Ferret:wait(1)
     WKSHud:open_cosmic_research()
@@ -97,9 +136,11 @@ function StellarCraftingRelic:loop()
         Ferret:wait(1)
         SelectString:select_index(0)
         Ferret:wait(1)
-        SelectIconString:select_index(Ferret.job - 8)
+        SelectIconString:select_index(self.cosmic_exploration.job - 8)
         Ferret:wait(1)
         SelectYesno:yes()
+        Talk:wait_until_ready()
+        Ferret:wait(1)
         Talk:progress_until_done()
         Ferret:wait(2)
 

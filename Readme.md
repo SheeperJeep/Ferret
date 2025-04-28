@@ -25,59 +25,15 @@ https://goatcorp.github.io/faq/dalamud_troubleshooting.html#q-how-do-i-enable-pl
 Please provide as much information as you can with your report, with the debug output from Ferret.
 The best way to get your issue noticed and not lost among messages is by submitting an issue on Github: https://github.com/OhKannaDuh/Ferret/issues/new
 
-### Stellar Missions example:
+## Templates
 
-```
-local ferret = require("Ferret/Templates/StellarMissions")
-
--- Plugins
-require("Ferret/Plugins/ExtractMateria") -- Optional materia extaction plugin
-
-require("Ferret/Plugins/Repair") -- Optional reaair plugin
-ferret.plugins.repair.threshold = 50 -- Gear degredation remaining to repair at (%)
-
-require("Ferret/Plugins/CraftingConsumables") -- Optional consumables plugin
-ferret.plugins.crafting_consumables.food = "Rroneek Steak <HQ>" -- Add if you want to eat food
-ferret.plugins.crafting_consumables.medicine = "Commanding Craftsman's Draught <HQ>" -- Add if you want to use medicine
-
--- General config
-Logger.show_debug = true
-Ferret.language = 'en' -- optional 'en', 'de', 'fr', 'jp' default: 'en'
-
-ferret.job = Jobs.Carpenter
--- Define mission list by names
-ferret.mission_list = ferret:create_job_list_by_names({
-    "A-1: High-grade Paper",
-    "A-1: Specialized Materials I",
-    "Heat-resistant Resin",
-    "A-1: Starship Insulation",
-})
--- or by ids
-ferret.mission_list = ferret:create_job_list_by_names({
-    23,
-    35,
-    17,
-    24,
-})
--- or a custom callback
-ferret.mission_list = ferret:create_job_list(function(mission)
-    return mission.class == "D" or mission.class == "C"
-end)
-
--- ferret:slow_mode() -- optional
-
-ferret:start()
-```
+- [Stellar Mission Farming](https://github.com/OhKannaDuh/Ferret/wiki/Stellar-Missions-Template) - Farm specific Stellar Missions (Crafting)
+- [Stellar Crafting Relic Automation](https://github.com/OhKannaDuh/Ferret/wiki/Stellar-Crafting-Relic-Template) - Farm the optimal mission to get your
 
 ### Stellar Crafting Relic example:
 
 ```
 local ferret = require("Ferret/Templates/StellarCraftingRelic")
-
-ferret.job = Jobs.Weaver
-ferret.blacklist = MasterMissionList:filter_by_job(ferret.job):filter(function(mission)
-    return mission.class == 'A'
-end)
 
 ferret:start()
 ```
