@@ -42,7 +42,10 @@ function CraftingConsumables:init()
                 Ferret:wait_until(function()
                     return self:get_remaining_food_time() > remaining
                 end)
-                Ferret:wait(self.wait_time)
+
+                if self:should_drink() and (self.medicine ~= nil and self.medicine ~= '') then
+                    Ferret:wait(self.wait_time)
+                end
             end
         end
 

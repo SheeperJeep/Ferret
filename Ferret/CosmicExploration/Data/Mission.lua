@@ -154,7 +154,7 @@ function Mission:multi_recipe()
     repeat
         Logger:debug('Repeat Start')
         if GetItemCount(48233) <= 0 then
-            return false
+            return self:is_complete()
         end
 
         for index, count in pairs(self.multi_craft_config) do
@@ -164,7 +164,7 @@ function Mission:multi_recipe()
                 end
 
                 if timer:seconds() >= 5 then
-                    return false
+                    return self:is_complete()
                 end
 
                 Ferret:wait(0.5)
@@ -183,7 +183,7 @@ function Mission:multi_recipe()
                         end
 
                         if timer:seconds() >= 5 then
-                            return false
+                            return self:is_complete()
                         end
 
                         Ferret:wait(0.5)
@@ -204,7 +204,7 @@ function Mission:multi_recipe()
         end
     until self:is_complete()
 
-    return true
+    return self:is_complete()
 end
 
 function Mission:handle()

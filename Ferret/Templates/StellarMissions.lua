@@ -21,7 +21,7 @@ function StellarMissions:new()
     self.missions_to_medicate_on = {}
     self.medicine_to_drink = nil
     self.food_to_eat = nil
-    self.job = nil
+    self.job = GetClassJobId()
     self.template_version = Version(2, 2, 1)
 
     self.cosmic_exploration = CosmicExploration()
@@ -62,12 +62,6 @@ end
 
 function StellarMissions:setup()
     Logger:info('Stellar missions ' .. self.template_version:to_string())
-
-    if self.job == nil then
-        Logger:error('Job not set')
-        Logger:info('Please set `stellar_missions.job = Jobs.Carpenter` etc.')
-        return false
-    end
 
     self.cosmic_exploration:set_job(self.job)
 

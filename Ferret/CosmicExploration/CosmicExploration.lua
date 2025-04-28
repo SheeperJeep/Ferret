@@ -1,7 +1,7 @@
 CosmicExploration = Object:extend()
 function CosmicExploration:new()
-    self.job = Jobs.Unknown
-    self.mission_list = {}
+    self.job = GetClassJobId()
+    self.mission_list = MasterMissionList:filter_by_job(self.job)
 end
 
 function CosmicExploration:set_job(job)
