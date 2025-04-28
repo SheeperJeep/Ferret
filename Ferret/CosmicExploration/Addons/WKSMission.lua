@@ -61,6 +61,8 @@ function WKSMission:get_available_missions()
         local index = 2
         repeat
             local mission = self:get_mission_name_by_index(index):gsub(' ', '')
+            Ferret:wait(0.016)
+
             if mission ~= '' then
                 local found_mission = Ferret.cosmic_exploration.mission_list:find_by_name(mission)
                 if found_mission ~= nil then
