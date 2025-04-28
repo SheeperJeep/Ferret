@@ -22,7 +22,7 @@ function StellarMissions:new()
     self.medicine_to_drink = nil
     self.food_to_eat = nil
     self.job = GetClassJobId()
-    self.template_version = Version(2, 2, 1)
+    self.template_version = Version(2, 2, 2)
 
     self.cosmic_exploration = CosmicExploration()
 
