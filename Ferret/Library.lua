@@ -12,6 +12,7 @@ require('Ferret/Data/Version')
 
 -- Other classes
 require('Ferret/NPC')
+require('Ferret/Timer')
 
 -- Base plugin
 require('Ferret/Plugins/Plugin')
@@ -25,7 +26,6 @@ require('Ferret/Actions/Actions')
 -- Static objects
 Character = require('Ferret/Character')
 Logger = require('Ferret/Logger')
-Timer = require('Ferret/Timer')
 
 -- Modules
 require('Ferret/CosmicExploration/Library')

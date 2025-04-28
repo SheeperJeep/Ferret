@@ -14,10 +14,11 @@ function Ferret:new(name)
     self.language = 'en'
     self.plugins = {}
     self.hook_subscriptions = {}
+    self.timer = Timer()
 end
 
 function Ferret:init()
-    self.version = Version(0, 5, 2)
+    self.version = Version(0, 5, 3)
 end
 
 function Ferret:add_plugin(plugin)
@@ -34,11 +35,15 @@ function Ferret:repeat_until(action, condition, delay, max)
     local delay = delay or 0.5
     local elapsed = 0
 
+    local last_return = nil
+
     repeat
-        action()
+        last_return = action()
         self:wait(delay)
         elapsed = elapsed + delay
     until condition() or (max ~= nil and max > 0 and elapsed >= max)
+
+    return last_return
 end
 
 function Ferret:wait_until(condition, delay, max)
@@ -69,7 +74,7 @@ function Ferret:loop()
 end
 
 function Ferret:start()
-    Timer:start()
+    self.timer:start()
     Logger:info('Ferret version: ' .. self.version:to_string())
     Logger:debug('Running Setup')
     if not self:setup() then

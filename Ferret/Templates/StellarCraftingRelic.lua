@@ -12,7 +12,7 @@ function StellarCraftingRelic:new()
     StellarCraftingRelic.super.new(self, 'Stellar Crafting Relic')
 
     self.job = nil
-    self.template_version = Version(0, 2, 2)
+    self.template_version = Version(0, 3, 0)
 
     self.cosmic_exploration = CosmicExploration()
 
@@ -123,7 +123,24 @@ function StellarCraftingRelic:loop()
 
     WKSHud:open_mission_menu()
 
-    mission:handle()
+    if not mission:handle() then
+        Logger:error('Mission failed: ' .. mission:to_string())
+        Logger:info('Blacklisting mission: ' .. mission.name:get())
+        self.blacklist:add(mission)
+
+        if Synthesis:is_visible() then
+            Synthesis:quit()
+            Ferret:wait(3)
+            mission:abandon()
+        else
+            Ferret:wait(3)
+            mission:report()
+        end
+
+        return
+    end
+
+    Logger:debug('Mission complete')
 
     self:repeat_until(function()
         mission:report()

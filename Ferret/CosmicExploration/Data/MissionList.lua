@@ -9,6 +9,10 @@ function MissionList:new()
     self.missions = {}
 end
 
+function MissionList:add(mission)
+    table.insert(self.missions, mission)
+end
+
 function MissionList:filter(callback)
     local filtered = MissionList()
     for _, mission in ipairs(self.missions) do

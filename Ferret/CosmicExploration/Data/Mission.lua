@@ -116,49 +116,103 @@ function Mission:wait_for_crafting_ui_or_mission_complete()
     Logger:debug('Finished waiting for Crafting ui or Mission complete')
 end
 
+function Mission:single_recipe()
+    Logger:debug('Recipe count: 1')
+    local timer = Timer()
+    timer:start()
+
+    repeat
+        if WKSRecipeNotebook:is_ready() then
+            if GetItemCount(48233) <= 0 then
+                return false
+            end
+
+            Ferret:wait(Mission.wait_timers.pre_synthesize)
+            WKSRecipeNotebook:synthesize()
+            Ferret:wait(Mission.wait_timers.post_synthesize)
+        end
+
+        if GetCharacterCondition(Conditions.Crafting40) then
+            timer:start()
+        end
+
+        if timer:seconds() >= 5 then
+            return false
+        end
+
+        Ferret:wait(0.5)
+    until self:is_complete()
+
+    return true
+end
+
+function Mission:multi_recipe()
+    Logger:debug('Recipe count: ' .. Ferret:get_table_length(self.multi_craft_config))
+    local timer = Timer()
+    timer:start()
+
+    repeat
+        Logger:debug('Repeat Start')
+        if GetItemCount(48233) <= 0 then
+            return false
+        end
+
+        for index, count in pairs(self.multi_craft_config) do
+            repeat
+                if GetCharacterCondition(Conditions.Crafting40) then
+                    timer:start()
+                end
+
+                if timer:seconds() >= 5 then
+                    return false
+                end
+
+                Ferret:wait(0.5)
+            until WKSRecipeNotebook:is_ready() or self:is_complete()
+
+            self:wait_for_crafting_ui_or_mission_complete()
+            if not self:is_complete() then
+                WKSRecipeNotebook:wait_until_ready()
+                Ferret:wait(0.5)
+                Logger:debug('Setting craft index to: ' .. index)
+                WKSRecipeNotebook:set_index(index)
+                for i = 1, count do
+                    repeat
+                        if GetCharacterCondition(Conditions.Crafting40) then
+                            timer:start()
+                        end
+
+                        if timer:seconds() >= 5 then
+                            return false
+                        end
+
+                        Ferret:wait(0.5)
+                    until WKSRecipeNotebook:is_ready() or self:is_complete()
+
+                    self:wait_for_crafting_ui_or_mission_complete()
+                    if not self:is_complete() then
+                        WKSRecipeNotebook:wait_until_ready()
+                        -- Ferret:wait(1)
+                        Logger:debug('Crafting: (' .. i .. '/' .. count .. ')')
+                        WKSRecipeNotebook:set_hq()
+                        Ferret:wait(Mission.wait_timers.pre_synthesize)
+                        WKSRecipeNotebook:synthesize()
+                        Ferret:wait(Mission.wait_timers.post_synthesize)
+                    end
+                end
+            end
+        end
+    until self:is_complete()
+end
+
 function Mission:handle()
     Logger:debug('Starting mission: ' .. self.name:get())
 
     if not self.has_multiple_recipes then
-        Logger:debug('Only 1 recipe')
-        Ferret:repeat_until(function()
-            if WKSRecipeNotebook:is_ready() then
-                Ferret:wait(Mission.wait_timers.pre_synthesize)
-                WKSRecipeNotebook:synthesize()
-                Ferret:wait(Mission.wait_timers.post_synthesize)
-            end
-        end, function()
-            return self:is_complete()
-        end)
+        return self:single_recipe()
     else
-        Logger:debug('Multiple recipe')
-        repeat
-            Logger:debug('Repeat Start')
-            for index, count in pairs(self.multi_craft_config) do
-                self:wait_for_crafting_ui_or_mission_complete()
-                if not self:is_complete() then
-                    WKSRecipeNotebook:wait_until_ready()
-                    Ferret:wait(0.5)
-                    Logger:debug('Setting craft index to: ' .. index)
-                    WKSRecipeNotebook:set_index(index)
-                    for i = 1, count do
-                        self:wait_for_crafting_ui_or_mission_complete()
-                        if not self:is_complete() then
-                            WKSRecipeNotebook:wait_until_ready()
-                            -- Ferret:wait(1)
-                            Logger:debug('Crafting: (' .. i .. '/' .. count .. ')')
-                            WKSRecipeNotebook:set_hq()
-                            Ferret:wait(Mission.wait_timers.pre_synthesize)
-                            WKSRecipeNotebook:synthesize()
-                            Ferret:wait(Mission.wait_timers.post_synthesize)
-                        end
-                    end
-                end
-            end
-        until self:is_complete()
+        return self:multi_recipe()
     end
-
-    Logger:debug('Mission complete')
 end
 
 function Mission:report()

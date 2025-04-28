@@ -153,7 +153,11 @@ function StellarMissions:loop()
 
         WKSHud:open_mission_menu()
 
-        mission:handle()
+        if not mission:handle() then
+            Logger:error('Mission failed: ' .. mission:to_string())
+            self:stop()
+            return
+        end
 
         self:repeat_until(function()
             mission:report()

@@ -4,9 +4,9 @@
 -- CONSTRIBUTORS:
 --------------------------------------------------------------------------------
 
-local Timer = Object:extend()
+Timer = Object:extend()
 function Timer:new()
-    self.startTime = 0
+    self.startTime = nil
 end
 
 function Timer:start()
@@ -14,7 +14,9 @@ function Timer:start()
 end
 
 function Timer:seconds()
+    if self.startTime == nil then
+        return 0
+    end
+
     return os.difftime(os.time(), self.startTime)
 end
-
-return Timer()
