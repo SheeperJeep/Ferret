@@ -37,13 +37,20 @@ function MissionList:filter_by_class(class)
 end
 
 function MissionList:filter_by_names(names)
-    for i, v in ipairs(names) do
-        names[i] = string.upper(v)
+    local filtered = MissionList()
+
+    for _, wanted_name in ipairs(names) do
+        wanted_name = string.upper(wanted_name)
+
+        for _, mission in ipairs(self.missions) do
+            if string.upper(mission.name:get()) == wanted_name then
+                table.insert(filtered.missions, mission)
+                break
+            end
+        end
     end
 
-    return self:filter(function(mission)
-        return Ferret:table_contains(names, string.upper(mission.name:get()))
-    end)
+    return filtered
 end
 
 function MissionList:filter_by_ids(ids)
