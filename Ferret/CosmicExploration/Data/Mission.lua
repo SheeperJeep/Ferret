@@ -203,6 +203,8 @@ function Mission:multi_recipe()
             end
         end
     until self:is_complete()
+
+    return true
 end
 
 function Mission:handle()
