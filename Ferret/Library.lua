@@ -1,4 +1,9 @@
 Object = require('external/classic')
+i18n = require('external/i18n/init')
+i18n.load(require('Ferret/i18n/en'))
+i18n.load(require('Ferret/i18n/de'))
+i18n.load(require('Ferret/i18n/fr'))
+i18n.load(require('Ferret/i18n/jp'))
 
 -- Data enums and objects
 require('Ferret/Data/Translatable')
@@ -25,6 +30,7 @@ require('Ferret/Actions/Actions')
 
 -- Static objects
 Character = require('Ferret/Character')
+IO = require('Ferret/IO')
 Logger = require('Ferret/Logger')
 
 -- Modules

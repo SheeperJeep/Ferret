@@ -4,7 +4,7 @@ function NPC:new(name)
 end
 
 function NPC:target()
-    yield('/target "' .. self.name:get() .. '"')
+    yield('/target "' .. self.name .. '"')
 end
 
 function NPC:interact()

@@ -4,7 +4,6 @@
 -- CONSTRIBUTORS:
 --------------------------------------------------------------------------------
 
-Object = require('external/classic')
 require('Ferret/Library')
 
 Ferret = Object:extend()
@@ -61,28 +60,29 @@ function Ferret:wait_until(condition, delay, max)
 end
 
 function Ferret:stop()
+    Logger:debug('ferret.stopping')
     self.run = false
 end
 
 function Ferret:setup()
-    Logger:debug('No setup implemented')
+    Logger:warn('ferret.no_setup')
 end
 
 function Ferret:loop()
-    Logger:warn('No loop implemented')
+    Logger:warn('ferret.no_loop')
     self:stop()
 end
 
 function Ferret:start()
     self.timer:start()
     Logger:info('Ferret version: ' .. self.version:to_string())
-    Logger:debug('Running Setup')
+    Logger:debug('ferret.running_setup')
     if not self:setup() then
-        Logger:error('An error occured during setup')
+        Logger:error('ferret.setup_error')
         return
     end
 
-    Logger:debug('Starting loop...')
+    Logger:debug('ferret.starting_loop')
     while self.run do
         self:emit(Hooks.PRE_LOOP)
         self:loop()
@@ -92,6 +92,7 @@ function Ferret:start()
 end
 
 function Ferret:subscribe(hook, callback)
+    Logger:debug('ferret.hook_subscription', { hook = hook })
     if not self.hook_subscriptions[hook] then
         self.hook_subscriptions[hook] = {}
     end
@@ -99,13 +100,13 @@ function Ferret:subscribe(hook, callback)
     table.insert(self.hook_subscriptions[hook], callback)
 end
 
-function Ferret:emit(hook, context)
-    Logger:debug('Emitting event: ' .. hook)
-    if not self.hook_subscriptions[hook] then
+function Ferret:emit(event, context)
+    Logger:debug('ferret.emit_event', { event = event })
+    if not self.hook_subscriptions[event] then
         return
     end
 
-    for _, callback in pairs(self.hook_subscriptions[hook]) do
+    for _, callback in pairs(self.hook_subscriptions[event]) do
         callback(self, context)
     end
 end
@@ -125,7 +126,7 @@ function Ferret:callback(addon, update_visiblity, ...)
         command = command .. ' ' .. v
     end
 
-    Logger:debug('Callback: ' .. command)
+    Logger:debug('ferret.callback', { command = command })
     yield(command)
 end
 

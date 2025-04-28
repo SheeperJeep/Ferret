@@ -25,7 +25,7 @@ function StellarCraftingRelic:new()
 
     self.blacklist = MissionList()
 
-    self.researchingway = NPC(Translatable('Researchingway'):with_jp('リサーチングウェイ'))
+    self.researchingway = NPC(i18n('npcs.researchingway'))
 
     self:init()
 end

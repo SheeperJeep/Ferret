@@ -12,6 +12,7 @@
     "IsLocalPlayerNull",
     "NeedsRepair",
     "PauseYesAlready",
+    "i18n",
     "yield"
   ],
   "diagnostics.disable": ["redundant-parameter"]

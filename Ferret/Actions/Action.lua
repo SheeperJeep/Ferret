@@ -10,5 +10,5 @@ function Action:new(name)
 end
 
 function Action:execute()
-    Ferret:action(self.name:get())
+    Ferret:action(self.name)
 end

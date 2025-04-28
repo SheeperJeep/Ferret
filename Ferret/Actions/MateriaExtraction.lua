@@ -6,13 +6,7 @@
 
 local MateriaExtraction = Action:extend()
 function MateriaExtraction:new()
-    MateriaExtraction.super.new(
-        self,
-        Translatable('Materia Extraction')
-            :with_de('Materia-Extraktion')
-            :with_fr('Matérialisation')
-            :with_jp('マテリア精製')
-    )
+    MateriaExtraction.super.new(self, i18n('actions.materia_extaction'))
 end
 
 return MateriaExtraction()
