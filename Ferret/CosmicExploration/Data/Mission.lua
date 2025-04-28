@@ -124,7 +124,7 @@ function Mission:single_recipe()
     repeat
         if WKSRecipeNotebook:is_ready() then
             if GetItemCount(48233) <= 0 then
-                return false
+                return self:is_complete()
             end
 
             Ferret:wait(Mission.wait_timers.pre_synthesize)
@@ -137,13 +137,13 @@ function Mission:single_recipe()
         end
 
         if timer:seconds() >= 5 then
-            return false
+            return self:is_complete()
         end
 
         Ferret:wait(0.5)
     until self:is_complete()
 
-    return true
+    return self:is_complete()
 end
 
 function Mission:multi_recipe()
