@@ -127,9 +127,8 @@ function WKSMission:get_best_available_mission(blacklist)
     }
 
     local rewards = {}
-    local missions = WKSMission:get_available_missions()
+    local missions = self:get_available_missions()
     for index, mission in pairs(missions.missions) do
-        Logger:info('Checking mission: ' .. mission.name:get())
         if not blacklist:has_id(mission.id) then
             Logger:info('Mission \'' .. mission.name:get() .. '\' is not blacklsited.')
             local r = {}
