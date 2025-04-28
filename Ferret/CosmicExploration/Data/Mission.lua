@@ -10,6 +10,8 @@ Mission.wait_timers = {
     post_synthesize = 0,
 }
 
+Mission.last_crafting_action_threshold = 5
+
 function Mission:new(id, name, job, class)
     self.id = id
     self.name = name
@@ -136,7 +138,7 @@ function Mission:single_recipe()
             timer:start()
         end
 
-        if timer:seconds() >= 5 then
+        if timer:seconds() >= Mission.last_crafting_action_threshold then
             return self:is_complete()
         end
 
@@ -152,7 +154,6 @@ function Mission:multi_recipe()
     timer:start()
 
     repeat
-        Logger:debug('Repeat Start')
         if GetItemCount(48233) <= 0 then
             return self:is_complete()
         end
@@ -163,7 +164,7 @@ function Mission:multi_recipe()
                     timer:start()
                 end
 
-                if timer:seconds() >= 5 then
+                if timer:seconds() >= Mission.last_crafting_action_threshold then
                     return self:is_complete()
                 end
 
@@ -182,7 +183,7 @@ function Mission:multi_recipe()
                             timer:start()
                         end
 
-                        if timer:seconds() >= 5 then
+                        if timer:seconds() >= Mission.last_crafting_action_threshold then
                             return self:is_complete()
                         end
 

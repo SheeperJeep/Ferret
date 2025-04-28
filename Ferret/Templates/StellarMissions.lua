@@ -46,6 +46,7 @@ function StellarMissions:slow_mode()
 
     Mission.wait_timers.pre_synthesize = 1
     Mission.wait_timers.post_synthesize = 1
+    Mission.last_crafting_action_threshold = 10
 end
 
 function StellarMissions:create_job_list(callback)
