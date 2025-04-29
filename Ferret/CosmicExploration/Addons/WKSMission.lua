@@ -53,8 +53,7 @@ function WKSMission:open_provisional_missions()
 end
 
 function WKSMission:get_mission_name_by_index(index)
-    Ferret:wait(0.016)
-    return GetNodeText(self.key, 89, index, 8)
+    return self:get_node_text(89, index, 8)
 end
 
 function WKSMission:get_available_missions()

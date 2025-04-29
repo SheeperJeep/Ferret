@@ -17,7 +17,7 @@ function StellarMissions:new()
 
     self.mission_list = MissionList()
     self.mission_order = MissionOrder.TopPriority
-    self.template_version = Version(2, 3, 0)
+    self.template_version = Version(2, 3, 1)
 
     self.cosmic_exploration = CosmicExploration()
 

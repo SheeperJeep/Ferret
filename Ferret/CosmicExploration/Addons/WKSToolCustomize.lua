@@ -11,9 +11,9 @@ end
 
 function WKSToolCustomize:get_exp(index)
     return ResearchProgressBar(
-        String:parse_number(GetNodeText(self.key, 8, index, 6) or '0'),
-        String:parse_number(GetNodeText(self.key, 8, index, 4) or '0'),
-        String:parse_number(GetNodeText(self.key, 8, index, 2) or '0')
+        self:get_node_number(8, index, 6) or 0,
+        self:get_node_number(8, index, 4) or 0,
+        self:get_node_number(8, index, 2) or 0
     )
 end
 
@@ -36,7 +36,7 @@ end
 function WKSToolCustomize:get_relic_ranks()
     local ranks = {}
     for index = 2, 12 do
-        ranks[index + 6] = String:parse_number(GetNodeText(self.key, 28, index, 5))
+        ranks[index + 6] = self:get_node_number(28, index, 5)
     end
 
     return ranks

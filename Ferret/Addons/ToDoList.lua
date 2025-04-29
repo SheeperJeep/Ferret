@@ -21,7 +21,7 @@ function ToDoList:get_stellar_mission_scores()
 
     for side = 1, 2 do
         for i = 1, self:get_count() do
-            local node_text = GetNodeText(self.key, i, side)
+            local node_text = self:get_node_text(i, side)
             local current_score, gold_star_requirement = string.match(node_text, pattern:get())
 
             if current_score and gold_star_requirement then
@@ -35,8 +35,8 @@ end
 
 function ToDoList:get_time_remaining()
     -- @todo check this works dynamically and across localisations
-    local a = GetNodeText('_ToDoList', 6, 2)
-    local minutes, seconds = string.match(a, '(%d+):(%d+)')
+    local timer = self:get_node_text(6, 2)
+    local minutes, seconds = string.match(timer, '(%d+):(%d+)')
     if minutes and seconds then
         return tonumber(minutes) * 60 + tonumber(seconds)
     end
