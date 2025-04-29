@@ -51,6 +51,7 @@ local function interpolate(pattern, variables)
     result = interpolateValue(result, variables)
     result = interpolateField(result, variables)
     result = escapePercentages(result)
+    LogInfo(result)
     result = string.format(result, unpack(variables))
     result = unescapePercentages(result)
     return result

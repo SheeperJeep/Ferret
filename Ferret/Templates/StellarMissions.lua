@@ -14,14 +14,10 @@ MissionOrder = {
 
 StellarMissions = Ferret:extend()
 function StellarMissions:new()
-    StellarMissions.super.new(self, 'Stellar Missions')
+    StellarMissions.super.new(self, i18n('templates.stellar_missions.name'))
 
     self.mission_list = MissionList()
     self.mission_order = MissionOrder.TopPriority
-    self.missions_to_medicate_on = {}
-    self.medicine_to_drink = nil
-    self.food_to_eat = nil
-    self.job = GetClassJobId()
     self.template_version = Version(2, 2, 2)
 
     self.cosmic_exploration = CosmicExploration()
@@ -50,41 +46,19 @@ function StellarMissions:slow_mode()
 end
 
 function StellarMissions:create_job_list(callback)
-    return MasterMissionList:filter_by_job(self.job):filter(callback)
+    return self.cosmic_exploration.mission_list:filter(callback)
 end
 
 function StellarMissions:create_job_list_by_names(names)
-    return MasterMissionList:filter_by_job(self.job):filter_by_names(names)
+    return self.cosmic_exploration.mission_list:filter_by_names(names)
 end
 
 function StellarMissions:create_job_list_by_ids(ids)
-    return MasterMissionList:filter_by_job(self.job):filter_by_names(ids)
+    return self.cosmic_exploration.mission_list:filter_by_ids(ids)
 end
 
 function StellarMissions:setup()
-    Logger:info('Stellar missions ' .. self.template_version:to_string())
-
-    self.cosmic_exploration:set_job(self.job)
-
-    local error = false
-    if self.mission_list.missions == nil then
-        local actual_missions = MissionList()
-        for _, mission in pairs(self.mission_list) do
-            local found_mission = self.cosmic_exploration.mission_list:find_by_name(mission)
-
-            if found_mission ~= nil then
-                Logger:debug(mission .. ': ' .. found_mission:to_string())
-                table.insert(actual_missions.missions, found_mission)
-            else
-                Logger:error(mission .. ': Not found')
-                error = true
-            end
-        end
-    end
-
-    if error then
-        return false
-    end
+    Logger:info(self.name .. ': ' .. self.template_version:to_string())
 
     PauseYesAlready()
 
@@ -92,8 +66,6 @@ function StellarMissions:setup()
 end
 
 function StellarMissions:loop()
-    Logger:debug('Starting loop')
-
     WKSHud:wait_until_ready()
 
     Ferret:wait(self.wait_timers.pre_open_mission_list)

@@ -14,13 +14,13 @@ end
 
 function Repair:init()
     Ferret:subscribe(Hooks.PRE_LOOP, function(context)
-        Logger:debug('Checking if gear needs repairing')
+        Logger:debug('plugins.repair.check')
         if not NeedsRepair(self.threshold) then
-            Logger:debug('Gear does not need repairing')
+            Logger:debug('plugins.repair.not_needed')
             return
         end
 
-        Logger:debug('Repairing')
+        Logger:debug('plugins.repair.repairing')
         while not IsAddonVisible('Repair') do
             Actions.Repair:execute()
             Ferret:wait(0.5)
@@ -40,7 +40,7 @@ function Repair:init()
 
         Ferret:wait(1)
         yield('/callback Repair true -1')
-        Logger:debug('Repaired all gear')
+        Logger:debug('plugins.repair.done')
     end)
 end
 

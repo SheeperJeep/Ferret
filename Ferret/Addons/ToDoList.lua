@@ -33,4 +33,15 @@ function ToDoList:get_stellar_mission_scores()
     return nil, nil
 end
 
+function ToDoList:get_time_remaining()
+    -- @todo check this works dynamically and across localisations
+    local a = GetNodeText('_ToDoList', 6, 2)
+    local minutes, seconds = string.match(a, '(%d+):(%d+)')
+    if minutes and seconds then
+        return tonumber(minutes) * 60 + tonumber(seconds)
+    end
+
+    return math.maxinteger
+end
+
 return ToDoList()

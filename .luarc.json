@@ -11,8 +11,10 @@
     "IsAddonReady",
     "IsAddonVisible",
     "IsLocalPlayerNull",
+    "LANGAUGE",
     "NeedsRepair",
     "PauseYesAlready",
+    "_language",
     "i18n",
     "yield"
   ],

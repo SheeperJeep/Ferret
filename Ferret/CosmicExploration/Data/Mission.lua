@@ -110,16 +110,16 @@ function Mission:is_complete()
 end
 
 function Mission:wait_for_crafting_ui_or_mission_complete()
-    Logger:debug('Waiting for Crafting ui or mission complete')
+    Logger:debug('modules.cosmic_exploration.mission.waiting_for_crafting_ui_or_mission_complete')
     Ferret:wait_until(function()
         return WKSRecipeNotebook:is_ready() or self:is_complete()
     end)
     Ferret:wait(1)
-    Logger:debug('Finished waiting for Crafting ui or Mission complete')
+    Logger:debug('modules.cosmic_exploration.mission.crafting_ui_or_mission_complete')
 end
 
 function Mission:single_recipe()
-    Logger:debug('Recipe count: 1')
+    Logger:debug('modules.cosmic_exploration.mission.recipe_count', { count = 1 })
     local timer = Timer()
     timer:start()
 
@@ -142,6 +142,10 @@ function Mission:single_recipe()
             return self:is_complete()
         end
 
+        if ToDoList:get_time_remaining() <= 0 then
+            return self:is_complete()
+        end
+
         Ferret:wait(0.5)
     until self:is_complete()
 
@@ -149,7 +153,10 @@ function Mission:single_recipe()
 end
 
 function Mission:multi_recipe()
-    Logger:debug('Recipe count: ' .. Ferret:get_table_length(self.multi_craft_config))
+    Logger:debug(
+        'modules.cosmic_exploration.mission.recipe_count',
+        { count = Ferret:get_table_length(self.multi_craft_config) }
+    )
     local timer = Timer()
     timer:start()
 
@@ -168,6 +175,10 @@ function Mission:multi_recipe()
                     return self:is_complete()
                 end
 
+                if ToDoList:get_time_remaining() <= 0 then
+                    return self:is_complete()
+                end
+
                 Ferret:wait(0.5)
             until WKSRecipeNotebook:is_ready() or self:is_complete()
 
@@ -175,7 +186,7 @@ function Mission:multi_recipe()
             if not self:is_complete() then
                 WKSRecipeNotebook:wait_until_ready()
                 Ferret:wait(0.5)
-                Logger:debug('Setting craft index to: ' .. index)
+                Logger:debug('modules.cosmic_exploration.mission.recipe_index', { index = index })
                 WKSRecipeNotebook:set_index(index)
                 for i = 1, count do
                     repeat
@@ -187,14 +198,17 @@ function Mission:multi_recipe()
                             return self:is_complete()
                         end
 
+                        if ToDoList:get_time_remaining() <= 0 then
+                            return self:is_complete()
+                        end
+
                         Ferret:wait(0.5)
                     until WKSRecipeNotebook:is_ready() or self:is_complete()
 
                     self:wait_for_crafting_ui_or_mission_complete()
                     if not self:is_complete() then
                         WKSRecipeNotebook:wait_until_ready()
-                        -- Ferret:wait(1)
-                        Logger:debug('Crafting: (' .. i .. '/' .. count .. ')')
+                        Logger:debug('modules.cosmic_exploration.mission.crafting', { index = i, count = count })
                         WKSRecipeNotebook:set_hq()
                         Ferret:wait(Mission.wait_timers.pre_synthesize)
                         WKSRecipeNotebook:synthesize()
@@ -209,7 +223,7 @@ function Mission:multi_recipe()
 end
 
 function Mission:handle()
-    Logger:debug('Starting mission: ' .. self.name:get())
+    Logger:debug('modules.cosmic_exploration.mission.starting_mission', { mission = self.name:get() })
 
     if not self.has_multiple_recipes then
         return self:single_recipe()
@@ -230,7 +244,7 @@ end
 
 function Mission:to_string()
     return string.format(
-        'Mission [\n    ID: %s,\n    Name: %s,\n    Job: %s,\n    Class: %s\n]',
+        '[\n    ID: %s,\n    Name: %s,\n    Job: %s,\n    Class: %s\n]',
         self.id,
         self.name:get(),
         self.job,

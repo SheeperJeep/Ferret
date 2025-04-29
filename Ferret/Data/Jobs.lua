@@ -19,20 +19,19 @@ Jobs = {
     Fisher = 18,
 }
 
--- @todo Translate these
 Jobs.gearset_name_map = {
-    [Jobs.Unknown] = 'Unknown',
-    [Jobs.Carpenter] = 'Carpenter',
-    [Jobs.Blacksmith] = 'Blacksmith',
-    [Jobs.Armorer] = 'Armorer',
-    [Jobs.Goldsmith] = 'Goldsmith',
-    [Jobs.Leatherworker] = 'Leatherworker',
-    [Jobs.Weaver] = 'Weaver',
-    [Jobs.Alchemist] = 'Alchemist',
-    [Jobs.Culinarian] = 'Culinarian',
-    [Jobs.Miner] = 'Miner',
-    [Jobs.Botanist] = 'Botanist',
-    [Jobs.Fisher] = 'Fisher',
+    [Jobs.Unknown] = i18n('jobs.unknown'),
+    [Jobs.Carpenter] = i18n('jobs.carpenter'),
+    [Jobs.Blacksmith] = i18n('jobs.blacksmith'),
+    [Jobs.Armorer] = i18n('jobs.armorer'),
+    [Jobs.Goldsmith] = i18n('jobs.goldsmith'),
+    [Jobs.Leatherworker] = i18n('jobs.leatherworker'),
+    [Jobs.Weaver] = i18n('jobs.weaver'),
+    [Jobs.Alchemist] = i18n('jobs.alchemist'),
+    [Jobs.Culinarian] = i18n('jobs.culinarian'),
+    [Jobs.Miner] = i18n('jobs.miner'),
+    [Jobs.Botanist] = i18n('jobs.botanist'),
+    [Jobs.Fisher] = i18n('jobs.fisher'),
 }
 
 function Jobs.get_name(job)

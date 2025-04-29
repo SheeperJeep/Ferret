@@ -14,11 +14,11 @@ function Addon:is_ready()
 end
 
 function Addon:wait_until_ready()
-    Logger:debug('Waiting for addon to be ready: ' .. self.key)
+    Logger:debug('addons.messages.wait_until_ready', { addon = self.key })
     Ferret:wait_until(function()
         return self:is_ready()
     end)
-    Logger:debug('Addon ready: ' .. self.key)
+    Logger:debug('addons.messages.ready', { addon = self.key })
 end
 
 function Addon:is_visible()
@@ -26,9 +26,9 @@ function Addon:is_visible()
 end
 
 function Addon:wait_until_visible()
-    Logger:debug('Waiting for addon to be visible: ' .. self.key)
+    Logger:debug('addons.messages.wait_until_visible', { addon = self.key })
     Ferret:wait_until(function()
         return self:is_visible()
     end)
-    Logger:debug('Addon visible: ' .. self.key)
+    Logger:debug('addons.messages.visible', { addon = self.key })
 end

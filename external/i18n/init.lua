@@ -39,7 +39,7 @@ local function assertPresent(functionName, paramName, value)
     end
 
     local msg = 'i18n.%s requires a non-empty string on its %s. Got %s (a %s value).'
-    error(msg:format(functionName, paramName, tostring(value), type(value)))
+        .. error(msg:format(functionName, paramName, tostring(value), type(value)))
 end
 
 local function assertPresentOrPlural(functionName, paramName, value)

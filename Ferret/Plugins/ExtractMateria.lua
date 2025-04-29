@@ -10,11 +10,11 @@ function ExtractMateria:new()
 end
 
 function ExtractMateria:init()
-    Ferret:subscribe(Hooks.PRE_LOOP, function(Ferret, context)
-        Logger:debug('Checking if materia needs to be extracted')
+    Ferret:subscribe(Hooks.PRE_LOOP, function(context)
+        Logger:debug('plugins.extract_materia.check')
 
         if not CanExtractMateria() then
-            Logger:debug('Materia does not need to be extracted')
+            Logger:debug('plugins.extract_materia.not_needed')
             return
         end
 
@@ -23,7 +23,7 @@ function ExtractMateria:init()
             Materialize:wait_until_ready()
         end
 
-        Logger:debug('Extracting Materia')
+        Logger:debug('plugins.extract_materia.extracting')
 
         while CanExtractMateria(100) do
             if Materialize:is_visible() then
@@ -46,7 +46,7 @@ function ExtractMateria:init()
         end
 
         Materialize:close()
-        Logger:debug('Extracted all materia')
+        Logger:debug('plugins.extract_materia.done')
     end)
 end
 

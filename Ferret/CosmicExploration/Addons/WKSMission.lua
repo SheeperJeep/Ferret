@@ -30,49 +30,51 @@ end
 
 function WKSMission:open_basic_missions()
     self:open()
-    Logger:debug('Opening basic mission ui')
+    Logger:debug('modules.cosmic_exploration.wks_mission.open_basic')
     Ferret:callback(self, true, 15, 0)
 end
 
 function WKSMission:open_critical_missions()
     self:open()
-    Logger:debug('Opening critical mission ui')
+    Logger:debug('modules.cosmic_exploration.wks_mission.open_critical')
     Ferret:callback(self, true, 15, 1)
 end
 
 function WKSMission:open_provisional_missions()
     self:open()
-    Logger:debug('Opening provisional mission ui')
+    Logger:debug('modules.cosmic_exploration.wks_mission.open_provisional')
     Ferret:callback(self, true, 15, 2)
 end
 
 function WKSMission:get_mission_name_by_index(index)
-    return GetNodeText('WKSMission', 89, index, 8)
+    Ferret:wait(0.016)
+    return GetNodeText(self.key, 89, index, 8)
 end
 
 function WKSMission:get_available_missions()
-    Logger:debug('Getting missions from mission list:')
+    Logger:debug('modules.cosmic_exploration.wks_mission.getting_missions')
 
     local missions = MissionList()
+    local names = {}
 
     for tab = 0, 2 do
         Ferret:callback(self, true, 15, tab)
         Ferret:wait(0.5)
-        local index = 2
-        repeat
-            local mission = self:get_mission_name_by_index(index):gsub(' ', '')
-            Ferret:wait(0.016)
 
-            if mission ~= '' then
-                local found_mission = Ferret.cosmic_exploration.mission_list:find_by_name(mission)
-                if found_mission ~= nil then
-                    table.insert(missions.missions, found_mission)
-                else
-                    Logger:error(mission .. ': Not found')
-                end
-                index = index + 1
+        for index = 2, 24 do
+            local mission_name = self:get_mission_name_by_index(index):gsub(' ', '')
+            if mission_name == '' or Ferret:table_contains(names, mission_name) then
+                break
             end
-        until (mission == '') or index >= 24
+
+            Logger:debug('modules.cosmic_exploration.wks_mission.mission_found', { mission = mission_name })
+            table.insert(names, mission_name)
+
+            local mission = Ferret.cosmic_exploration.mission_list:find_by_name(mission_name)
+            if mission ~= nil then
+                missions:add(mission)
+            end
+        end
     end
 
     return missions
@@ -132,7 +134,7 @@ function WKSMission:get_best_available_mission(blacklist)
     local missions = self:get_available_missions()
     for index, mission in pairs(missions.missions) do
         if not blacklist:has_id(mission.id) then
-            Logger:info('Mission \'' .. mission.name:get() .. '\' is not blacklisted.')
+            Logger:info('modules.cosmic_exploration.wks_mission.not_blacklisted', { mission = mission.name:get() })
             local r = {}
             for _, reward in pairs(mission.exp_reward) do
                 r[reward.tier] = reward.amount
@@ -140,7 +142,7 @@ function WKSMission:get_best_available_mission(blacklist)
 
             rewards[index] = r
         else
-            Logger:info('Mission \'' .. mission.name:get() .. '\' is blacklisted.')
+            Logger:info('modules.cosmic_exploration.wks_mission.blacklisted', { mission = mission.name:get() })
         end
     end
 

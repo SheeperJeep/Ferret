@@ -7,6 +7,7 @@
 local Logger = Object:extend()
 function Logger:new()
     self.log_file_directory = nil
+    self.file_only = false
     self.show_debug = false
 
     -- self.file = IO:open('ferret.log', 'a')
@@ -39,7 +40,9 @@ function Logger:log(message)
         IO:open(path, 'a'):write(message .. '\n'):close()
     end
 
-    yield('/e ' .. message)
+    if not self.file_only then
+        yield('/e ' .. message)
+    end
 end
 
 function Logger:type(subject)
@@ -55,7 +58,10 @@ function Logger:table(subject)
 end
 
 function Logger:info(contents, args)
-    local translated = i18n(contents, args)
+    local translated = nil
+    if self:should_translate(contents) then
+        translated = i18n(tostring(contents), args)
+    end
 
     self:log('[' .. Ferret.name .. '][Info]: ' .. (translated or contents))
 end
@@ -64,22 +70,39 @@ function Logger:debug(contents, args)
     if not self.show_debug then
         return
     end
-    local translated = i18n(contents, args)
+
+    local translated = nil
+    if self:should_translate(contents) then
+        translated = i18n(tostring(contents), args)
+    end
 
     self:log('[' .. Ferret.name .. '][Debug]: ' .. (translated or contents))
 end
 
 function Logger:warn(contents, args)
-    local translated = i18n(contents, args)
+    local translated = nil
+    if self:should_translate(contents) then
+        translated = i18n(tostring(contents), args)
+    end
 
     self:log('[' .. Ferret.name .. '][Warn]: ' .. (translated or contents))
 end
 
-function Logger:error(contents, args)
-    local translated = i18n(contents, args)
+function Logger:error(contents, args, show_backtrace)
+    local translated = nil
+    if self:should_translate(contents) then
+        translated = i18n(tostring(contents), args)
+    end
 
     self:log('[' .. Ferret.name .. '][Error]: ' .. (translated or contents))
-    self:log('Backtrace: ' .. debug.traceback())
+
+    if show_backtrace or show_backtrace == nil then
+        self:log('Backtrace: ' .. debug.traceback())
+    end
+end
+
+function Logger:should_translate(key)
+    return string.find(key, '%', 0, true) == nil
 end
 
 return Logger()

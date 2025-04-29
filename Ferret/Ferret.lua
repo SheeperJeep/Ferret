@@ -183,6 +183,10 @@ function Ferret:table_dump(subject)
     return tostring(subject)
 end
 
+function Ferret:string_starts_with(subject, prefix)
+    return string.sub(subject, 1, string.len(prefix)) == prefix
+end
+
 function Ferret:parse_number(str)
     return tonumber((str:gsub(',', ''):gsub('%.', ''):gsub(' ', '')))
 end

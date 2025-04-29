@@ -34,10 +34,12 @@ end
 
 function CraftingConsumables:init()
     Ferret:subscribe(Hooks.PRE_CRAFT, function(context)
+        Logger:debug('plugins.crafting_consumables.pre_craft_start')
         -- Food
         if self:should_eat() and (self.food ~= nil and self.food ~= '') then
             local remaining = self:get_remaining_food_time()
             if remaining <= self.food_threshold then
+                Logger:debug('plugins.crafting_consumables.eating_food', { food = self.food })
                 yield('/item ' .. self.food)
                 Ferret:wait_until(function()
                     return self:get_remaining_food_time() > remaining
@@ -46,16 +48,21 @@ function CraftingConsumables:init()
                 if self:should_drink() and (self.medicine ~= nil and self.medicine ~= '') then
                     Ferret:wait(self.wait_time)
                 end
+            else
+                Logger:debug('plugins.crafting_consumables.food_above_time', { time = self.food_threshold })
             end
         end
 
         if self:should_drink() and (self.medicine ~= nil and self.medicine ~= '') then
             local remaining = self:get_remaining_medicine_time()
             if remaining <= self.medicine_threshold then
+                Logger:debug('plugins.crafting_consumables.drinking_medicine', { medicine = self.medicine })
                 yield('/item ' .. self.medicine)
                 Ferret:wait_until(function()
                     return self:get_remaining_medicine_time() > remaining
                 end)
+            else
+                Logger:debug('plugins.crafting_consumables.medicine_above_time', { time = self.medicine_threshold })
             end
         end
     end)
@@ -64,6 +71,7 @@ end
 function CraftingConsumables:get_remaining_food_time()
     return math.floor(GetStatusTimeRemaining(Status.WellFed) / 60)
 end
+
 function CraftingConsumables:get_remaining_medicine_time()
     return math.floor(GetStatusTimeRemaining(Status.Medicated) / 60)
 end

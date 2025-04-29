@@ -1,5 +1,6 @@
 Object = require('external/classic')
 i18n = require('external/i18n/init')
+i18n.setLocale(_language or 'en')
 i18n.load(require('Ferret/i18n/en'))
 i18n.load(require('Ferret/i18n/de'))
 i18n.load(require('Ferret/i18n/fr'))

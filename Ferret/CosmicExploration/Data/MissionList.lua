@@ -115,3 +115,11 @@ function MissionList:get_overlap(other)
 
     return overlap
 end
+
+function MissionList:to_string()
+    local missions = {}
+    for _, mission in ipairs(self.missions) do
+        table.insert(missions, mission.name:get())
+    end
+    return 'Mission List: ' .. table.concat(missions, ', ')
+end
