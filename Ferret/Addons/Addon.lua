@@ -1,14 +1,18 @@
 --------------------------------------------------------------------------------
 --   DESCRIPTION: Abstract addon class
 --        AUTHOR: Faye (OhKannaDuh)
--- CONSTRIBUTORS:
 --------------------------------------------------------------------------------
 
+---@class Addon : Object
+---@field key string
 Addon = Object:extend()
+
+---@param key string
 function Addon:new(key)
     self.key = key
 end
 
+---@return boolean
 function Addon:is_ready()
     return IsAddonReady(self.key)
 end
@@ -21,6 +25,7 @@ function Addon:wait_until_ready()
     Logger:debug('addons.messages.ready', { addon = self.key })
 end
 
+---@return boolean
 function Addon:is_visible()
     return IsAddonVisible(self.key)
 end

@@ -1,9 +1,9 @@
 --------------------------------------------------------------------------------
 --   DESCRIPTION: Addon for the Materia Extraction Yes/No popup
 --        AUTHOR: Faye (OhKannaDuh)
--- CONSTRIBUTORS:
 --------------------------------------------------------------------------------
 
+---@class MaterializeDialog : Addon
 local MaterializeDialog = Addon:extend()
 
 function MaterializeDialog:new()

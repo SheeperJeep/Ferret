@@ -1,3 +1,9 @@
+--------------------------------------------------------------------------------
+--   DESCRIPTION: Main Cosmic Exploration hud
+--        AUTHOR: Faye (OhKannaDuh)
+--------------------------------------------------------------------------------
+
+---@class WKSHud : Addon
 local WKSHud = Addon:extend()
 function WKSHud:new()
     WKSHud.super.new(self, 'WKSHud')

@@ -1,9 +1,9 @@
 --------------------------------------------------------------------------------
 --   DESCRIPTION: Addon for the Talking NPC popup
 --        AUTHOR: Faye (OhKannaDuh)
--- CONSTRIBUTORS:
 --------------------------------------------------------------------------------
 
+---@class Talk : Addon
 local Talk = Addon:extend()
 function Talk:new()
     Talk.super.new(self, 'Talk')

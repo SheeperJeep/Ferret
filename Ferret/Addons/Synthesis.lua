@@ -1,9 +1,9 @@
 --------------------------------------------------------------------------------
 --   DESCRIPTION: Addon for Quest list (Not Journal)
 --        AUTHOR: Faye (OhKannaDuh)
--- CONSTRIBUTORS:
 --------------------------------------------------------------------------------
 
+---@class Synthesis : Addon
 local Synthesis = Addon:extend()
 function Synthesis:new()
     Synthesis.super.new(self, 'Synthesis')

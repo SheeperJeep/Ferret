@@ -1,7 +1,6 @@
 --------------------------------------------------------------------------------
 --   DESCRIPTION: Stellar Crafting Relic automator
 --        AUTHOR: Faye (OhKannaDuh)
--- CONSTRIBUTORS:
 --------------------------------------------------------------------------------
 
 require('Ferret/Ferret')
@@ -46,8 +45,6 @@ function StellarCraftingRelic:new()
     self.blacklist = MissionList()
 
     self.researchingway = NPC(i18n('npcs.researchingway'))
-
-    self:init()
 end
 
 function StellarCraftingRelic:slow_mode()
@@ -122,7 +119,7 @@ function StellarCraftingRelic:loop()
     }
 
     for i, exp in ipairs(progress) do
-        if Ferret:get_table_length(exp) > 0 then
+        if Table:count(exp) > 0 then
             if exp.current < exp.required then
                 is_ready_to_upgrade = false
             end

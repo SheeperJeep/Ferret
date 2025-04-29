@@ -1,9 +1,9 @@
 --------------------------------------------------------------------------------
 --   DESCRIPTION: Character statuses
 --        AUTHOR: Faye (OhKannaDuh)
--- CONSTRIBUTORS:
 --------------------------------------------------------------------------------
 
+---@enum Status
 Status = {
     WellFed = 48,
     Medicated = 49,

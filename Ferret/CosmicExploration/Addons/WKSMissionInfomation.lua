@@ -1,3 +1,9 @@
+--------------------------------------------------------------------------------
+--   DESCRIPTION: Cosmic exploration mission report window
+--        AUTHOR: Faye (OhKannaDuh)
+--------------------------------------------------------------------------------
+
+---@class WKSMissionInfomation : Addon
 local WKSMissionInfomation = Addon:extend()
 function WKSMissionInfomation:new()
     WKSMissionInfomation.super.new(self, 'WKSMissionInfomation')

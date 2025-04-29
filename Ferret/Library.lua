@@ -1,3 +1,11 @@
+---@class Object
+---@field extend function
+---@field implement function
+---@field is function
+---@field __tostring function
+---@field __call function
+---@field super Object
+---@field new fun(Object, ...)
 Object = require('external/classic')
 i18n = require('external/i18n/init')
 i18n.setLocale(_language or 'en')
@@ -33,6 +41,8 @@ require('Ferret/Actions/Actions')
 Character = require('Ferret/Character')
 IO = require('Ferret/IO')
 Logger = require('Ferret/Logger')
+Table = require('Ferret/Table')
+String = require('Ferret/String')
 
 -- Modules
 require('Ferret/CosmicExploration/Library')

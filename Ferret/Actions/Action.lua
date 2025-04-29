@@ -1,10 +1,13 @@
 --------------------------------------------------------------------------------
 --   DESCRIPTION: Abstract action class
 --        AUTHOR: Faye (OhKannaDuh)
--- CONSTRIBUTORS:
 --------------------------------------------------------------------------------
 
+---@class Action : Object
+---@field name string
 Action = Object:extend()
+
+---@param name string
 function Action:new(name)
     self.name = name
 end

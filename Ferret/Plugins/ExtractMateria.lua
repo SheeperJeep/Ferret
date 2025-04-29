@@ -1,9 +1,9 @@
 --------------------------------------------------------------------------------
 --   DESCRIPTION: Plugin that extracts materia before a loop
 --        AUTHOR: Faye (OhKannaDuh)
--- CONSTRIBUTORS:
 --------------------------------------------------------------------------------
 
+---@class ExtractMateria : Plugin
 ExtractMateria = Plugin:extend()
 function ExtractMateria:new()
     ExtractMateria.super.new(self, 'Extract Materia', 'extract_materia')

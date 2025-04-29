@@ -1,11 +1,17 @@
 --------------------------------------------------------------------------------
 --   DESCRIPTION: Main library class
 --        AUTHOR: Faye (OhKannaDuh)
--- CONSTRIBUTORS:
 --------------------------------------------------------------------------------
 
 require('Ferret/Library')
 
+---@class Ferret : Object
+---@field name string
+---@field run boolean
+---@field language string en/de/fr/jp
+---@field plugins Plugin[]
+---@field hook_subscriptions { [Hook]: fun(table)[] }
+---@field timer Timer
 Ferret = Object:extend()
 function Ferret:new(name)
     self.name = name
@@ -14,22 +20,25 @@ function Ferret:new(name)
     self.plugins = {}
     self.hook_subscriptions = {}
     self.timer = Timer()
-end
-
-function Ferret:init()
     self.version = Version(0, 6, 0)
 end
 
+---@param plugin Plugin
 function Ferret:add_plugin(plugin)
     Logger:debug('Adding plugin: ' .. plugin.name)
     plugin:init(self)
     self.plugins[plugin.key] = plugin
 end
 
+---@param interval number
 function Ferret:wait(interval)
     yield('/wait ' .. interval)
 end
 
+---@param action function
+---@param condition fun(): boolean
+---@param delay? number
+---@param max? number
 function Ferret:repeat_until(action, condition, delay, max)
     local delay = delay or 0.5
     local elapsed = 0
@@ -45,6 +54,9 @@ function Ferret:repeat_until(action, condition, delay, max)
     return last_return
 end
 
+---@param condition fun(): boolean
+---@param delay? number
+---@param max? number
 function Ferret:wait_until(condition, delay, max)
     local delay = delay or 0.5
     local elapsed = 0
@@ -59,20 +71,24 @@ function Ferret:wait_until(condition, delay, max)
     until condition() or (max ~= nil and max > 0 and elapsed >= max)
 end
 
+---Stops the loop from running
 function Ferret:stop()
     Logger:debug('ferret.stopping')
     self.run = false
 end
 
+---Base setup function
 function Ferret:setup()
     Logger:warn('ferret.no_setup')
 end
 
+---Base loop function
 function Ferret:loop()
     Logger:warn('ferret.no_loop')
     self:stop()
 end
 
+---Starts the loop
 function Ferret:start()
     self.timer:start()
     Logger:info('Ferret version: ' .. self.version:to_string())
@@ -91,6 +107,8 @@ function Ferret:start()
     Logger:debug('Done')
 end
 
+---@param hook Hook
+---@param callback fun(table)
 function Ferret:subscribe(hook, callback)
     Logger:debug('ferret.hook_subscription', { hook = hook })
     if not self.hook_subscriptions[hook] then
@@ -100,6 +118,8 @@ function Ferret:subscribe(hook, callback)
     table.insert(self.hook_subscriptions[hook], callback)
 end
 
+---@param event Hook
+---@param context table
 function Ferret:emit(event, context)
     Logger:debug('ferret.emit_event', { event = event })
     if not self.hook_subscriptions[event] then
@@ -111,10 +131,14 @@ function Ferret:emit(event, context)
     end
 end
 
+---@param name string
 function Ferret:action(name)
     yield('/ac "' .. name .. '"')
 end
 
+---@param addon Addon
+---@param update_visiblity boolean
+---@param ... integer
 function Ferret:callback(addon, update_visiblity, ...)
     local command = '/callback ' .. addon.key
     if update_visiblity then
@@ -128,65 +152,4 @@ function Ferret:callback(addon, update_visiblity, ...)
 
     Logger:debug('ferret.callback', { command = command })
     yield(command)
-end
-
--- Helpers
-function Ferret:get_table_length(subject)
-    local count = 0
-
-    for _ in pairs(subject) do
-        count = count + 1
-    end
-
-    return count
-end
-
-function Ferret:table_contains(table, value)
-    for _, v in pairs(table) do
-        if v == value then
-            return true
-        end
-    end
-    return false
-end
-
-function Ferret:table_random(subject)
-    local keys = {}
-    for key, _ in pairs(subject) do
-        table.insert(keys, key)
-    end
-
-    local key = keys[math.random(1, #keys)]
-    return subject[key]
-end
-
-function Ferret:table_first(subject)
-    for _, value in pairs(subject) do
-        return value
-    end
-
-    return nil
-end
-
-function Ferret:table_dump(subject)
-    if type(subject) == 'table' then
-        local s = '{ '
-        for k, v in pairs(subject) do
-            if type(k) ~= 'number' then
-                k = '"' .. k .. '"'
-            end
-            s = s .. '[' .. k .. '] = ' .. self:table_dump(v) .. ','
-        end
-        return s .. '} '
-    end
-
-    return tostring(subject)
-end
-
-function Ferret:string_starts_with(subject, prefix)
-    return string.sub(subject, 1, string.len(prefix)) == prefix
-end
-
-function Ferret:parse_number(str)
-    return tonumber((str:gsub(',', ''):gsub('%.', ''):gsub(' ', '')))
 end

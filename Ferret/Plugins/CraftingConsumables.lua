@@ -1,18 +1,14 @@
 --------------------------------------------------------------------------------
 --   DESCRIPTION: Plugin that consumes food and medicine before crafting
 --        AUTHOR: Faye (OhKannaDuh)
--- CONSTRIBUTORS:
--- OPTIONS:
---- food: [string] The in game name of the food you'd like to consume
---- food_threshold: [integer] The number of minutes remaining on the well fed buff before
----                 you consume more
---- medicine: [string] The in game name of the medicine you'd like to consume
---- medicine_threshold: [integer] The number of minutes remaining on the medicated buff
----                     before you consume more
---- should_eat: [function(context) -> bool] Add custom logic to food
---- should_drink: [function(context) -> bool] Add custum logic to medicine
 --------------------------------------------------------------------------------
 
+---@class CraftingConsumables : Plugin
+---@field food string
+---@field food_threshold integer
+---@field medicine string
+---@field medicine_threshold integer
+---@field wait_time integer The time to wait before drinking medicine after eating food
 CraftingConsumables = Plugin:extend()
 function CraftingConsumables:new()
     CraftingConsumables.super.new(self, 'Crafting Consumables', 'crafting_consumables')
@@ -68,10 +64,12 @@ function CraftingConsumables:init()
     end)
 end
 
+---@return integer
 function CraftingConsumables:get_remaining_food_time()
     return math.floor(GetStatusTimeRemaining(Status.WellFed) / 60)
 end
 
+---@return integer
 function CraftingConsumables:get_remaining_medicine_time()
     return math.floor(GetStatusTimeRemaining(Status.Medicated) / 60)
 end

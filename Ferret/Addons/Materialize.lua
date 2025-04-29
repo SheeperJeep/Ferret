@@ -1,9 +1,9 @@
 --------------------------------------------------------------------------------
 --   DESCRIPTION: Addon for the Materia Extraction screen
 --        AUTHOR: Faye (OhKannaDuh)
--- CONSTRIBUTORS:
 --------------------------------------------------------------------------------
 
+---@class Materialize : Addon
 local Materialize = Addon:extend()
 
 function Materialize:new()

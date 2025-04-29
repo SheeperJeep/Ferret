@@ -1,7 +1,6 @@
 --------------------------------------------------------------------------------
 --   DESCRIPTION: CosmicExploration Addons list
 --        AUTHOR: Faye (OhKannaDuh)
--- CONSTRIBUTORS:
 --------------------------------------------------------------------------------
 
 WKSHud = require('Ferret/CosmicExploration/Addons/WKSHud')

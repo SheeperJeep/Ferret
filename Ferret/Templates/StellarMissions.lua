@@ -1,7 +1,6 @@
 --------------------------------------------------------------------------------
 --   DESCRIPTION: Stellar Crafting Mission automator
 --        AUTHOR: Faye (OhKannaDuh)
--- CONSTRIBUTORS:
 --------------------------------------------------------------------------------
 
 require('Ferret/Ferret')
@@ -28,8 +27,6 @@ function StellarMissions:new()
         post_mission_start = 0,
         post_mission_abandon = 0,
     }
-
-    self:init()
 end
 
 function StellarMissions:slow_mode()
@@ -75,15 +72,15 @@ function StellarMissions:loop()
     local available_missions = WKSMission:get_available_missions()
     local mission_list = self.mission_list:get_overlap(available_missions)
 
-    if self:get_table_length(mission_list.missions) <= 0 then
+    if Table:count(mission_list.missions) <= 0 then
         local classes = {}
         for _, mission in pairs(self.mission_list.missions) do
-            if not self:table_contains(classes, mission.class) then
+            if not Table:contains(classes, mission.class) then
                 table.insert(classes, mission.class)
             end
         end
         Logger:debug('Selecting mission to abandon')
-        local class = self:table_random(classes)
+        local class = Table:random(classes)
         local class_missions = available_missions:filter_by_class(class)
         local mission = class_missions:random()
         if mission == nil then

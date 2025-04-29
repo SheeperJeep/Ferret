@@ -1,9 +1,9 @@
 --------------------------------------------------------------------------------
 --   DESCRIPTION: Event hooks for ferret callbacks
 --        AUTHOR: Faye (OhKannaDuh)
--- CONSTRIBUTORS:
 --------------------------------------------------------------------------------
 
+---@enum Hook
 Hooks = {
     PRE_LOOP = 1,
     POST_LOOP = 2,

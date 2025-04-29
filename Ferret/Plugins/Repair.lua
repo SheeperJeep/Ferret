@@ -1,11 +1,10 @@
 --------------------------------------------------------------------------------
 --   DESCRIPTION: Plugin that repairs your gear before a loop
 --        AUTHOR: Faye (OhKannaDuh)
--- CONSTRIBUTORS:
--- OPTIONS:
---- threshold: [integer] Remaining gear durability required before repairing
 --------------------------------------------------------------------------------
 
+---@class Repair : Plugin
+---@field threshold integer
 Repair = Plugin:extend()
 function Repair:new()
     Repair.super.new(self, 'Repair', 'repair')

@@ -1,9 +1,12 @@
 --------------------------------------------------------------------------------
---   DESCRIPTION: Semantic versioning objecty
+--   DESCRIPTION: Semantic versioning object
 --        AUTHOR: Faye (OhKannaDuh)
--- CONSTRIBUTORS:
 --------------------------------------------------------------------------------
 
+---@class Version : Object
+---@field major integer
+---@field minor integer
+---@field patch integer
 Version = Object:extend()
 function Version:new(major, minor, patch)
     self.major = major
@@ -11,6 +14,7 @@ function Version:new(major, minor, patch)
     self.patch = patch
 end
 
+---@return string
 function Version:to_string()
     return string.format('v%d.%d.%d', self.major, self.minor, self.patch)
 end

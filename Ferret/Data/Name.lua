@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 --   DESCRIPTION: Translatable name
 --        AUTHOR: Faye (OhKannaDuh)
--- CONSTRIBUTORS:
 --------------------------------------------------------------------------------
 
+---@class Name : Translatable
 Name = Translatable:extend()

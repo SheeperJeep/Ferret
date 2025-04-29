@@ -1,18 +1,21 @@
 --------------------------------------------------------------------------------
 --   DESCRIPTION: CosmicExploration Mission List
 --        AUTHOR: Faye (OhKannaDuh)
--- CONSTRIBUTORS:
 --------------------------------------------------------------------------------
 
+---@class MissionList : Object
+---@field missions Mission[]
 MissionList = Object:extend()
 function MissionList:new()
     self.missions = {}
 end
 
+---@param mission Mission
 function MissionList:add(mission)
     table.insert(self.missions, mission)
 end
 
+---@param callback  fun(mission: Mission): boolean
 function MissionList:filter(callback)
     local filtered = MissionList()
     for _, mission in ipairs(self.missions) do
@@ -24,18 +27,21 @@ function MissionList:filter(callback)
     return filtered
 end
 
+---@param job Job
 function MissionList:filter_by_job(job)
     return self:filter(function(mission)
         return mission.job == job
     end)
 end
 
+---@param class string
 function MissionList:filter_by_class(class)
     return self:filter(function(mission)
         return mission.class == class
     end)
 end
 
+---@param names string[]
 function MissionList:filter_by_names(names)
     local filtered = MissionList()
 
@@ -53,12 +59,14 @@ function MissionList:filter_by_names(names)
     return filtered
 end
 
+---@param ids integer[]
 function MissionList:filter_by_ids(ids)
     return self:filter(function(mission)
-        return Ferret:table_contains(ids, mission.id)
+        return Table:contains(ids, mission.id)
     end)
 end
 
+---@param name string
 function MissionList:find_by_name(name)
     name = string.upper(name)
     for _, mission in pairs(self.missions) do
@@ -72,6 +80,7 @@ function MissionList:find_by_name(name)
     return nil
 end
 
+---@return Mission|nil
 function MissionList:first()
     for _, mission in pairs(self.missions) do
         return mission
@@ -80,6 +89,7 @@ function MissionList:first()
     return nil
 end
 
+---@return Mission|nil
 function MissionList:random()
     local keys = {}
 
@@ -94,6 +104,8 @@ function MissionList:random()
     return self.missions[key]
 end
 
+---@param id integer
+---@return boolean
 function MissionList:has_id(id)
     for _, mission in pairs(self.missions) do
         if mission.id == id then
@@ -104,6 +116,8 @@ function MissionList:has_id(id)
     return false
 end
 
+---@param other MissionList
+---@return MissionList
 function MissionList:get_overlap(other)
     local overlap = MissionList()
 
@@ -116,6 +130,7 @@ function MissionList:get_overlap(other)
     return overlap
 end
 
+---@return string
 function MissionList:to_string()
     local missions = {}
     for _, mission in ipairs(self.missions) do

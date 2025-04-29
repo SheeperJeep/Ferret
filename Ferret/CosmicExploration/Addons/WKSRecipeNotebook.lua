@@ -1,3 +1,9 @@
+--------------------------------------------------------------------------------
+--   DESCRIPTION: Cosmic exploration recipe selection addon
+--        AUTHOR: Faye (OhKannaDuh)
+--------------------------------------------------------------------------------
+
+---@class WKSRecipeNotebook : Addon
 local WKSRecipeNotebook = Addon:extend()
 function WKSRecipeNotebook:new()
     WKSRecipeNotebook.super.new(self, 'WKSRecipeNotebook')

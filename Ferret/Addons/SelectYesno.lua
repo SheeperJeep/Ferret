@@ -1,9 +1,9 @@
 --------------------------------------------------------------------------------
 --   DESCRIPTION: Addon for the SelectYesno
 --        AUTHOR: Faye (OhKannaDuh)
--- CONSTRIBUTORS:
 --------------------------------------------------------------------------------
 
+---@class SelectYesno : Addon
 local SelectYesno = Addon:extend()
 function SelectYesno:new()
     SelectYesno.super.new(self, 'SelectYesno')

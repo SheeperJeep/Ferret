@@ -1,9 +1,9 @@
 --------------------------------------------------------------------------------
 --   DESCRIPTION: Addon for the SelectIconString
 --        AUTHOR: Faye (OhKannaDuh)
--- CONSTRIBUTORS:
 --------------------------------------------------------------------------------
 
+---@class SelectIconString : Addon
 local SelectIconString = Addon:extend()
 function SelectIconString:new()
     SelectIconString.super.new(self, 'SelectIconString')

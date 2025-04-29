@@ -1,9 +1,9 @@
 --------------------------------------------------------------------------------
 --   DESCRIPTION: Addon for the SelectString
 --        AUTHOR: Faye (OhKannaDuh)
--- CONSTRIBUTORS:
 --------------------------------------------------------------------------------
 
+---@class SelectString : Addon
 local SelectString = Addon:extend()
 function SelectString:new()
     SelectString.super.new(self, 'SelectString')

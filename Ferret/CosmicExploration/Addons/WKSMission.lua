@@ -1,3 +1,9 @@
+--------------------------------------------------------------------------------
+--   DESCRIPTION: Cosmic exploration mission list
+--        AUTHOR: Faye (OhKannaDuh)
+--------------------------------------------------------------------------------
+
+---@class WKSMission : Addon
 local WKSMission = Addon:extend()
 function WKSMission:new()
     WKSMission.super.new(self, 'WKSMission')
@@ -63,7 +69,7 @@ function WKSMission:get_available_missions()
 
         for index = 2, 24 do
             local mission_name = self:get_mission_name_by_index(index):gsub(' ', '')
-            if mission_name == '' or Ferret:table_contains(names, mission_name) then
+            if mission_name == '' or Table:contains(names, mission_name) then
                 break
             end
 

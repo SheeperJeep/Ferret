@@ -1,13 +1,13 @@
 --------------------------------------------------------------------------------
 --   DESCRIPTION: CosmicExploration all missions
 --        AUTHOR: Faye (OhKannaDuh)
--- CONSTRIBUTORS:
 --------------------------------------------------------------------------------
 
 require('Ferret/CosmicExploration/Data/Mission')
 require('Ferret/CosmicExploration/Data/MissionList')
 require('Ferret/Data/Name')
 
+---@type MissionList
 MasterMissionList = MissionList()
 
 MasterMissionList.missions = {

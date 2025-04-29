@@ -1,9 +1,9 @@
 --------------------------------------------------------------------------------
 --   DESCRIPTION: Addon for Quest list (Not Journal)
 --        AUTHOR: Faye (OhKannaDuh)
--- CONSTRIBUTORS:
 --------------------------------------------------------------------------------
 
+---@class ToDoList : Addon
 local ToDoList = Addon:extend()
 function ToDoList:new()
     ToDoList.super.new(self, '_ToDoList')
@@ -25,7 +25,7 @@ function ToDoList:get_stellar_mission_scores()
             local current_score, gold_star_requirement = string.match(node_text, pattern:get())
 
             if current_score and gold_star_requirement then
-                return Ferret:parse_number(current_score), Ferret:parse_number(gold_star_requirement)
+                return String:parse_number(current_score), String:parse_number(gold_star_requirement)
             end
         end
     end
