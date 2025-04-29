@@ -20,7 +20,7 @@ function Ferret:new(name)
     self.plugins = {}
     self.hook_subscriptions = {}
     self.timer = Timer()
-    self.version = Version(0, 6, 0)
+    self.version = Version(0, 7, 0)
 end
 
 ---@param plugin Plugin
@@ -119,7 +119,7 @@ function Ferret:subscribe(hook, callback)
 end
 
 ---@param event Hook
----@param context table
+---@param context table?
 function Ferret:emit(event, context)
     Logger:debug('ferret.emit_event', { event = event })
     if not self.hook_subscriptions[event] then

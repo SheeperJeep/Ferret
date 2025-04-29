@@ -9,6 +9,8 @@ require('Ferret/CosmicExploration/CosmicExploration')
 StellarCraftingRelic = Ferret:extend()
 function StellarCraftingRelic:new()
     StellarCraftingRelic.super.new(self, i18n('templates.stellar_crafting_relic.name'))
+    self.template_version = Version(0, 6, 0)
+
     self.job_order = {
         Jobs.Carpenter,
         Jobs.Blacksmith,
@@ -31,8 +33,6 @@ function StellarCraftingRelic:new()
         [Jobs.Culinarian] = 1,
     }
 
-    self.template_version = Version(0, 5, 0)
-
     self.cosmic_exploration = CosmicExploration()
 
     self.wait_timers = {
@@ -44,7 +44,7 @@ function StellarCraftingRelic:new()
 
     self.blacklist = MissionList()
 
-    self.researchingway = NPC(i18n('npcs.researchingway'))
+    self.researchingway = Targetable(i18n('npcs.researchingway'))
 end
 
 function StellarCraftingRelic:slow_mode()

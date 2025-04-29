@@ -23,9 +23,10 @@ require('Ferret/Data/Name')
 require('Ferret/Data/Objects')
 require('Ferret/Data/Status')
 require('Ferret/Data/Version')
+require('Ferret/Data/Node')
 
 -- Other classes
-require('Ferret/NPC')
+require('Ferret/Targetable')
 require('Ferret/Timer')
 
 -- Base plugin
@@ -39,6 +40,12 @@ require('Ferret/Actions/Actions')
 
 -- Static objects
 Character = require('Ferret/Character')
+Mount = require('Ferret/Mount')
+World = require('Ferret/World')
+Gathering = require('Ferret/Gathering')
+GatherBuddy = require('Ferret/GatherBuddy')
+Pathfinding = require('Ferret/Pathfinding')
+SpearfishingHelper = require('Ferret/SpearfishingHelper')
 IO = require('Ferret/IO')
 Logger = require('Ferret/Logger')
 Table = require('Ferret/Table')

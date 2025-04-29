@@ -55,6 +55,7 @@ function Table:first(subject)
 end
 
 ---@param subject table
+---@return string
 function Table:dump(subject)
     if type(subject) == 'table' then
         local s = '{ '
@@ -68,6 +69,27 @@ function Table:dump(subject)
     end
 
     return tostring(subject)
+end
+
+---@param subject table
+---@return boolean
+function Table:is_empty(subject)
+    for _, _ in pairs(subject) do
+        return false
+    end
+
+    return true
+end
+
+---@param subject table
+---@return string
+function Table:keys(subject)
+    local keys = {}
+    for key, _ in pairs(subject) do
+        table.insert(keys, tostring(key))
+    end
+
+    return table.concat(keys, ', ')
 end
 
 return Table()

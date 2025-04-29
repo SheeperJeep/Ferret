@@ -1,22 +1,23 @@
 --------------------------------------------------------------------------------
---   DESCRIPTION: Object representing an ingame NPC, that can be interacted with
+--   DESCRIPTION: Object representing a Targetable object, such as a gathering
+--                node or NPC
 --        AUTHOR: Faye (OhKannaDuh)
 --------------------------------------------------------------------------------
 
----@class NPC : Object
+---@class Targetable : Object
 ---@field name string
-NPC = Object:extend()
-function NPC:new(name)
+Targetable = Object:extend()
+function Targetable:new(name)
     self.name = name
 end
 
----Target the NPC if they are in range
-function NPC:target()
+---Target the subject if they are in range
+function Targetable:target()
     yield('/target "' .. self.name .. '"')
 end
 
----Tries to target the NPC and interact with them
-function NPC:interact()
+---Tries to target the subject and interact with them
+function Targetable:interact()
     self:target()
     Ferret:wait(0.2)
     yield('/interact')

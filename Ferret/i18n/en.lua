@@ -4,8 +4,12 @@ return {
             messages = {
                 executing = 'Executing action: %{action}',
             },
+            aetherial_reduction = 'Aetherial Reduction',
             materia_extraction = 'Materia Extraction',
             repair = 'Repair',
+            sprint = 'Sprint',
+            mount_roulette = 'Mount Roulette',
+            mount = 'Mount',
         },
         addons = {
             messages = {
@@ -17,6 +21,9 @@ return {
         },
         npcs = {
             researchingway = 'Researchingway',
+        },
+        nodes = {
+            teeming_waters = 'Teeming Waters',
         },
         jobs = {
             unknown = 'Unknown',
@@ -43,6 +50,13 @@ return {
             hook_subscription = 'Regsitering callback to hook: %{hook}',
             emit_event = 'Emitting Event: %{event}',
             callback = 'Callback: %{command}',
+        },
+        world = {
+            waiting = 'Waiting until Eorzea time is %{hour}',
+            done_waiting = 'Finished waiting for time',
+        },
+        pathfinding = {
+            adding_node = 'Adding node to pathfinding %{node}',
         },
         modules = {
             cosmic_exploration = {
@@ -107,6 +121,14 @@ return {
             },
             stellar_missions = {
                 name = 'Stellar Mission Farming',
+            },
+            spearfishing = {
+                name = 'Spearfishing',
+                no_node = 'No pathfinding node found',
+            },
+            ephemeral_gathering = {
+                name = 'Ephemeral Gathering',
+                no_node = 'No pathfinding node found',
             },
         },
     },
