@@ -30,16 +30,6 @@ The best way to get your issue noticed and not lost among messages is by submitt
 - [Stellar Mission Farming](https://github.com/OhKannaDuh/Ferret/wiki/Stellar-Missions-Template) - Farm specific Stellar Missions (Crafting)
 - [Stellar Crafting Relic Automation](https://github.com/OhKannaDuh/Ferret/wiki/Stellar-Crafting-Relic-Template) - Farm the optimal mission to get your
 
-### Stellar Crafting Relic example:
-
-```
-local ferret = require("Ferret/Templates/StellarCraftingRelic")
-
-ferret:start()
-```
-
-### Plugins
-
 ```
 local stellar_missions = require("Ferret/Templates/StellarMissions") --example
 require("Ferret/Plugins/ExtractMateria") -- plugins are auto registered
