@@ -32,7 +32,7 @@ function StellarCraftingRelic:new()
         [Jobs.Culinarian] = 1,
     }
 
-    self.template_version = Version(0, 4, 1)
+    self.template_version = Version(0, 5, 0)
 
     self.cosmic_exploration = CosmicExploration()
 
