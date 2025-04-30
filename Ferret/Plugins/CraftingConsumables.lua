@@ -19,11 +19,11 @@ function CraftingConsumables:new()
 
     self.wait_time = 5
 
-    self.should_eat = function()
+    self.should_eat = function(context)
         return true
     end
 
-    self.should_drink = function()
+    self.should_drink = function(context)
         return true
     end
 end
@@ -32,7 +32,7 @@ function CraftingConsumables:init()
     Ferret:subscribe(Hooks.PRE_CRAFT, function(context)
         Logger:debug('plugins.crafting_consumables.pre_craft_start')
         -- Food
-        if self:should_eat() and (self.food ~= nil and self.food ~= '') then
+        if self:should_eat(context) and (self.food ~= nil and self.food ~= '') then
             local remaining = self:get_remaining_food_time()
             if remaining <= self.food_threshold then
                 Logger:debug('plugins.crafting_consumables.eating_food', { food = self.food })
@@ -41,7 +41,7 @@ function CraftingConsumables:init()
                     return self:get_remaining_food_time() > remaining
                 end)
 
-                if self:should_drink() and (self.medicine ~= nil and self.medicine ~= '') then
+                if self:should_drink(context) and (self.medicine ~= nil and self.medicine ~= '') then
                     Ferret:wait(self.wait_time)
                 end
             else

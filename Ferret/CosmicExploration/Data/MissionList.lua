@@ -61,9 +61,16 @@ end
 
 ---@param ids integer[]
 function MissionList:filter_by_ids(ids)
-    return self:filter(function(mission)
-        return Table:contains(ids, mission.id)
-    end)
+    local filtered = MissionList()
+
+    for _, id in ipairs(ids) do
+        local mission = self:find_by_id(id)
+        if mission then
+            filtered:add(mission)
+        end
+    end
+
+    return filtered
 end
 
 ---@param name string
@@ -73,6 +80,18 @@ function MissionList:find_by_name(name)
         local start_index = string.find(string.upper(mission.name:get()), name, 0, true)
 
         if start_index ~= nil and start_index <= 4 then
+            return mission
+        end
+    end
+
+    return nil
+end
+
+---@param id integer
+---@return Mission|nil
+function MissionList:find_by_id(id)
+    for _, mission in pairs(self.missions) do
+        if mission.id == id then
             return mission
         end
     end

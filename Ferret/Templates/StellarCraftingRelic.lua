@@ -160,7 +160,9 @@ function StellarCraftingRelic:loop()
 
     Ferret:wait(self.wait_timers.post_mission_start)
     WKSRecipeNotebook:wait_until_ready()
-    self:emit(Hooks.PRE_CRAFT)
+    self:emit(Hooks.PRE_CRAFT, {
+        mission = mission,
+    })
 
     WKSHud:open_mission_menu()
 
