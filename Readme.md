@@ -1,6 +1,7 @@
 # Ferret
 
-To be used with https://github.com/Jaksuhn/SomethingNeedDoing
+A Lua library to be used with https://github.com/Jaksuhn/SomethingNeedDoing
+The goal is to make interacting with the game and the APIs SND proides easier.
 
 **Currently you will need to be on the testing version of SND (12.0)**
 https://goatcorp.github.io/faq/dalamud_troubleshooting.html#q-how-do-i-enable-plugin-test-builds
