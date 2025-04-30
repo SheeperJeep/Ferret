@@ -3,31 +3,35 @@
 --        AUTHOR: Faye (OhKannaDuh)
 --------------------------------------------------------------------------------
 
----@class WKSMissionInfomation : Addon
+---@class WKSMissionInfomation : Addon, Translation
 local WKSMissionInfomation = Addon:extend()
+WKSMissionInfomation:implement(Translation)
+
 function WKSMissionInfomation:new()
     WKSMissionInfomation.super.new(self, 'WKSMissionInfomation')
+    self.ready_max = 5
+    self.visible_max = 5
+
+    self.translation_path = 'modules.cosmic_exploration.wks_mission_information'
 end
 
 function WKSMissionInfomation:report()
-    self:wait_until_ready()
-    Character:wait_until_done_crafting()
-    Ferret:callback(self, true, 11)
-    repeat
-        Ferret:wait(0.1)
-    until not self:is_visible()
+    self:log_debug('report')
+    Debug:log_previous_call()
+
+    self:callback(true, 11)
 end
 
 function WKSMissionInfomation:abandon()
     repeat
         if self:is_ready() then
-            Ferret:callback(self, true, 12)
+            self:callback(true, 12)
         end
         Ferret:wait(0.1)
-    until SelectYesno:is_visible()
+    until Addons.SelectYesno:is_visible()
     repeat
-        if SelectYesno:is_ready() then
-            SelectYesno:yes()
+        if Addons.SelectYesno:is_ready() then
+            Addons.SelectYesno:yes()
         end
         Ferret:wait(0.1)
     until not WKSMissionInfomation:is_visible()

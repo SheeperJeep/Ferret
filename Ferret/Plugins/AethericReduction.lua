@@ -3,19 +3,23 @@
 --        AUTHOR: Faye (OhKannaDuh)
 --------------------------------------------------------------------------------
 
----@class AethericReduction : Plugin
+---@class AethericReduction : Plugin, Translation
 ---@field reduce_at integer
 AethericReduction = Plugin:extend()
+AethericReduction:implement(Translation)
+
 function AethericReduction:new()
     AethericReduction.super.new(self, 'AethericReduction', 'aetheric_reduction')
     self.reduce_at = 100
+
+    self.translation_path = 'plugins.aetheric_reduction'
 end
 
 function AethericReduction:init()
     Ferret:subscribe(Hooks.POST_LOOP, function(context)
-        Logger:info('plugins.aetheric_reduction.check')
+        self:log_info('check')
         if GetInventoryFreeSlotCount() > self.reduce_at then
-            Logger:info('plugins.aetheric_reduction.not_needed')
+            self:log_info('not_needed')
             return
         end
 

@@ -11,8 +11,7 @@ function PurifyAutoDialog:new()
 end
 
 function PurifyAutoDialog:check_for_exit()
-    -- @todo translate
-    return self:get_node_text(2, 2) == 'Exit'
+    return self:get_node_text(2, 2) == i18n('basic.exit')
 end
 
 function PurifyAutoDialog:wait_for_exit()
@@ -22,7 +21,7 @@ function PurifyAutoDialog:wait_for_exit()
 end
 
 function PurifyAutoDialog:exit()
-    Ferret:callback(self, true, 0)
+    self:callback(true, 0)
 end
 
 return PurifyAutoDialog()

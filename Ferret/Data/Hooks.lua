@@ -3,7 +3,7 @@
 --        AUTHOR: Faye (OhKannaDuh)
 --------------------------------------------------------------------------------
 
----@enum Hook
+---@alias Hook integer
 Hooks = {
     PRE_LOOP = 1,
     POST_LOOP = 2,

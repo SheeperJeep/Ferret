@@ -1,3 +1,4 @@
+---@diagnostic disable-next-line: deprecated
 local unpack = unpack or table.unpack -- lua 5.2 compat
 
 local FORMAT_CHARS =
@@ -51,7 +52,6 @@ local function interpolate(pattern, variables)
     result = interpolateValue(result, variables)
     result = interpolateField(result, variables)
     result = escapePercentages(result)
-    LogInfo(result)
     result = string.format(result, unpack(variables))
     result = unescapePercentages(result)
     return result

@@ -14,10 +14,15 @@ MissionOrder = {
 StellarMissions = Ferret:extend()
 function StellarMissions:new()
     StellarMissions.super.new(self, i18n('templates.stellar_missions.name'))
+    self.template_version = Version(2, 5, 0)
 
     self.mission_list = MissionList()
     self.mission_order = MissionOrder.TopPriority
-    self.template_version = Version(2, 4, 0)
+
+    self.minimum_acceptable_result = MissionResult.Gold
+    self.per_mission_acceptable_result = {}
+
+    self.stop_on_failure = false
 
     self.cosmic_exploration = CosmicExploration()
 
@@ -54,6 +59,14 @@ function StellarMissions:create_job_list_by_ids(ids)
     return self.cosmic_exploration.mission_list:filter_by_ids(ids)
 end
 
+function StellarMissions:get_acceptable_result(mission)
+    if self.per_mission_acceptable_result[mission.id] then
+        return self.per_mission_acceptable_result[mission.id]
+    end
+
+    return self.minimum_acceptable_result
+end
+
 function StellarMissions:setup()
     Logger:info(self.name .. ': ' .. self.template_version:to_string())
 
@@ -63,14 +76,14 @@ function StellarMissions:setup()
 end
 
 function StellarMissions:loop()
-    WKSHud:wait_until_ready()
+    Addons.WKSHud:wait_until_ready()
 
     repeat
-        WKSMission:open()
+        Addons.WKSMission:open()
         Ferret:wait(0.2)
-    until WKSMission:is_ready()
+    until Addons.WKSMission:is_ready()
 
-    local available_missions = WKSMission:get_available_missions()
+    local available_missions = Addons.WKSMission:get_available_missions()
     local overlap = self.mission_list:get_overlap(available_missions)
 
     if overlap:is_empty() then
@@ -93,7 +106,7 @@ function StellarMissions:loop()
         end
 
         mission:start()
-        WKSRecipeNotebook:wait_until_ready()
+        Addons.WKSRecipeNotebook:wait_until_ready()
         mission:abandon()
         return
     else
@@ -112,26 +125,33 @@ function StellarMissions:loop()
         end
 
         Logger:debug('mission: ' .. mission:to_string())
+
         mission:start()
         Ferret:wait(self.wait_timers.post_mission_start)
-        WKSRecipeNotebook:wait_until_ready()
+        Addons.WKSRecipeNotebook:wait_until_ready()
         self:emit(Hooks.PRE_CRAFT)
 
-        WKSHud:open_mission_menu()
+        Addons.WKSHud:open_mission_menu()
 
-        local success, reason = mission:handle()
-        if not success then
+        local result, reason = mission:handle()
+        if result.tier < self:get_acceptable_result(mission) then
             Logger:warn('Mission failed: ' .. mission:to_string())
             Logger:warn('Reason: ' .. reason)
-            Logger:info('Quiting Ferret ' .. self.verion:to_string())
-            self:stop()
+
+            if self.stop_on_failure then
+                Logger:info('Quiting Ferret ' .. self.verion:to_string())
+                self:stop()
+            end
             return
         end
 
+        Addons.WKSHud:open_mission_menu()
+        Character:wait_until_done_crafting()
+        Addons.WKSMissionInfomation:wait_until_ready()
         self:repeat_until(function()
             mission:report()
         end, function()
-            return not mission:is_complete()
+            return not Addons.WKSMissionInfomation:is_visible()
         end)
     end
 end

@@ -11,11 +11,11 @@ function PurifyItemSelector:new()
 end
 
 function PurifyItemSelector:click_first()
-    Ferret:callback(self, true, 12, 0)
+    self:callback(true, 12, 0)
 end
 
 function PurifyItemSelector:exit()
-    Ferret:callback(self, true, -1)
+    self:callback(true, -1)
 end
 
 return PurifyItemSelector()

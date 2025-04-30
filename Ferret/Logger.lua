@@ -65,68 +65,55 @@ function Logger:table(subject)
     self:log('[' .. Ferret.name .. '][Table]: ' .. Table:dump(subject))
 end
 
----Logs under the info level. Checks if given contents is a translation string
----@param contents string Data to log or translation string
----@param args table Arguments for the translation string
-function Logger:info(contents, args)
-    local translated = nil
-    if self:should_translate(contents) then
-        translated = i18n(tostring(contents), args)
-    end
-
-    self:log('[' .. Ferret.name .. '][Info]: ' .. (translated or contents))
+function Logger:info_t(key, args)
+    self:info(i18n(key, args))
 end
 
----Logs under the debug level. Checks if given contents is a translation string. Logs are only logged when show_debug is true
+---Logs under the info level.
 ---@param contents string Data to log or translation string
----@param args? table Arguments for the translation string
-function Logger:debug(contents, args)
+function Logger:info(contents)
+    contents = contents or ''
+
+    self:log('[' .. Ferret.name .. '][Info]: ' .. (contents or ''))
+end
+
+function Logger:debug_t(key, args)
+    self:debug(i18n(key, args))
+end
+
+---Logs under the debug level. Logs are only logged when show_debug is true
+---@param contents string Data to log or translation string
+function Logger:debug(contents)
     if not self.show_debug then
         return
     end
 
-    local translated = nil
-    if self:should_translate(contents) then
-        translated = i18n(tostring(contents), args)
-    end
-
-    self:log('[' .. Ferret.name .. '][Debug]: ' .. (translated or contents))
+    self:log('[' .. Ferret.name .. '][Debug]: ' .. (contents or ''))
 end
 
----Logs under the warn level. Checks if given contents is a translation string
----@param contents string Data to log or translation string
----@param args? table Arguments for the translation string
-function Logger:warn(contents, args)
-    local translated = nil
-    if self:should_translate(contents) then
-        translated = i18n(tostring(contents), args)
-    end
+function Logger:warn_t(key, args)
+    self:warn(i18n(key, args))
+end
 
-    self:log('[' .. Ferret.name .. '][Warn]: ' .. (translated or contents))
+---Logs under the warn level.
+---@param contents string Data to log or translation string
+function Logger:warn(contents)
+    self:log('[' .. Ferret.name .. '][Warn]: ' .. (contents or ''))
+end
+
+function Logger:error_t(key, args, show_backtrace)
+    self:error(i18n(key, args), show_backtrace)
 end
 
 ---Logs under the error level. Checks if given contents is a translation string
 ---@param contents string Data to log or translation string
----@param args? table Arguments for the translation string
 ---@param show_backtrace? boolean Prints the current backtrace if not supplied or true, pass false to prevent this
-function Logger:error(contents, args, show_backtrace)
-    local translated = nil
-    if self:should_translate(contents) then
-        translated = i18n(tostring(contents), args)
-    end
-
-    self:log('[' .. Ferret.name .. '][Error]: ' .. (translated or contents))
+function Logger:error(contents, show_backtrace)
+    self:log('[' .. Ferret.name .. '][Error]: ' .. (contents or ''))
 
     if show_backtrace or show_backtrace == nil then
         self:log('Backtrace: ' .. debug.traceback())
     end
-end
-
----Checks the given string for escape characters that wouldn't appear in a translation string
----@param key string
----@return boolean
-function Logger:should_translate(key)
-    return string.find(key, '%', 0, true) == nil
 end
 
 return Logger()

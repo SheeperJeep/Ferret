@@ -13,8 +13,14 @@ function ToDoList:get_count()
     return GetNodeListCount(self.key)
 end
 
+---@return MissionResult
 function ToDoList:get_stellar_mission_scores()
-    local pattern = Translatable('Current Score: ([%d,]+)%. Gold Star Requirement: ([%d,]+)')
+    local silver_patern = Translatable('Current Score: ([%d,]+)%. Silver Star Requirement: ([%d,]+)')
+        :with_de('Aktuell: ([%d%.]+) / Silber: ([%d%.]+)')
+        :with_fr('Évaluation : ([%d%s]+) / Rang argent : ([%d%s]+)')
+        :with_jp('現在の評価値: ([%d,]+) / シルバーグレード条件: ([%d,]+)')
+
+    local gold_pattern = Translatable('Current Score: ([%d,]+)%. Gold Star Requirement: ([%d,]+)')
         :with_de('Aktuell: ([%d%.]+) / Gold: ([%d%.]+)')
         :with_fr('Évaluation : ([%d%s]+) / Rang or : ([%d%s]+)')
         :with_jp('現在の評価値: ([%d,]+) / ゴールドグレード条件: ([%d,]+)')
@@ -22,15 +28,23 @@ function ToDoList:get_stellar_mission_scores()
     for side = 1, 2 do
         for i = 1, self:get_count() do
             local node_text = self:get_node_text(i, side)
-            local current_score, gold_star_requirement = string.match(node_text, pattern:get())
+            local current, silver = string.match(node_text, silver_patern:get())
+            if current and silver then
+                return MissionScore(MissionResult.Fail, current, silver)
+            end
 
-            if current_score and gold_star_requirement then
-                return String:parse_number(current_score), String:parse_number(gold_star_requirement)
+            local current, gold = string.match(node_text, gold_pattern:get())
+            if current and gold then
+                if current < gold then
+                    return MissionScore(MissionResult.Silver, current, gold)
+                end
+
+                return MissionScore(MissionResult.Gold, current, gold)
             end
         end
     end
 
-    return nil, nil
+    return MissionScore(MissionResult.Fail, '0', '0')
 end
 
 function ToDoList:get_time_remaining()

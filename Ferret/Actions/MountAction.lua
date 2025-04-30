@@ -10,7 +10,7 @@ function MountAction:new()
 end
 
 function MountAction:execute(argument)
-    Logger:debug('actions.messages.executing', { action = self.name })
+    Logger:debug_t('actions.messages.executing', { action = self.name })
     yield('/mount "' .. argument .. '"')
 end
 

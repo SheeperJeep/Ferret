@@ -1,5 +1,12 @@
 return {
     en = {
+        version = '%{name}: %{version}',
+        basic = {
+            exit = 'Exit',
+        },
+        debug = {
+            previous_call = 'Called from %{filename} (Line: %{line}) (Method: %{method})',
+        },
         actions = {
             messages = {
                 executing = 'Executing action: %{action}',
@@ -15,8 +22,13 @@ return {
             messages = {
                 wait_until_ready = 'Waiting for addon to be ready: %{addon}',
                 ready = 'Addon ready: %{addon}',
+                wait_until_not_ready = 'Waiting for addon to be not ready: %{addon}',
+                not_ready = 'Addon not ready: %{addon}',
                 wait_unitl_visible = 'Waiting for addon to be visible: %{addon}',
                 visible = 'Addon visible: %{addon}',
+                wait_until_not_visible = 'Waiting for addon to be not visible: %{addon}',
+                not_visible = 'Addon not visible: %{addon}',
+                callback = 'Callback: %{command}',
             },
         },
         npcs = {
@@ -49,7 +61,6 @@ return {
             starting_loop = 'Starting Ferret loop',
             hook_subscription = 'Regsitering callback to hook: %{hook}',
             emit_event = 'Emitting Event: %{event}',
-            callback = 'Callback: %{command}',
         },
         world = {
             waiting = 'Waiting until Eorzea time is %{hour}',
@@ -61,6 +72,7 @@ return {
         modules = {
             cosmic_exploration = {
                 wks_mission = {
+                    open = 'Opening mission ui',
                     open_basic = 'Opening basic mission ui',
                     open_critical = 'Opening critical mission ui',
                     open_provisional = 'Opening provisional mission ui',
@@ -69,6 +81,9 @@ return {
                     mission_not_found = 'Mission not found or for a different job: %{mission}',
                     blacklisted = 'Mission %{mission} is blacklisted.',
                     not_blacklisted = 'Mission %{mission} is not blacklisted.',
+                },
+                wks_mission_information = {
+                    report = 'Reporting mission',
                 },
                 mission = {
                     waiting_for_crafting_ui_or_mission_complete = 'Waiting for Crafting ui or mission complete',
@@ -80,7 +95,12 @@ return {
                     recipe_index = 'Setting recipe index to %{index}',
                     crafting = 'Crafting (%{index}/%{count})',
                     starting_mission = 'Starting mission: %{mission}',
-                    crafting_current = 'Crafing currnetly selected recipe.',
+                    crafting_current = 'Crafting currently selected recipe (%{name}).',
+                    not_craftable = 'Cannot craft recipe',
+                    timeout = 'Too much time has passed since the last detected crafting action',
+                    finished_craft = 'Finished Craft',
+                    finished = 'Finished, crafted: %{crafted}',
+                    no_more_to_craft = 'No more to craft, crafted: %{crafted}',
                 },
             },
         },

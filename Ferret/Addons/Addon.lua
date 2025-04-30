@@ -10,6 +10,15 @@ Addon = Object:extend()
 ---@param key string
 function Addon:new(key)
     self.key = key
+
+    self.ready_delay = nil
+    self.ready_max = nil
+    self.not_ready_delay = nil
+    self.not_ready_max = nil
+    self.visible_delay = nil
+    self.visible_max = nil
+    self.not_visible_delay = nil
+    self.not_visible_max = nil
 end
 
 ---@return boolean
@@ -17,20 +26,32 @@ function Addon:is_ready()
     return IsAddonReady(self.key)
 end
 
-function Addon:wait_until_not_ready()
-    -- Logger:debug('addons.messages.wait_until_ready', { addon = self.key })
-    Ferret:wait_until(function()
-        return not self:is_ready()
-    end)
-    -- Logger:debug('addons.messages.ready', { addon = self.key })
-end
+function Addon:wait_until_ready(delay, max)
+    delay = delay or self.ready_delay
+    max = max or self.ready_max
 
-function Addon:wait_until_ready()
-    Logger:debug('addons.messages.wait_until_ready', { addon = self.key })
+    Logger:debug_t('addons.messages.wait_until_ready', { addon = self.key })
+    Debug:log_previous_call()
+
     Ferret:wait_until(function()
         return self:is_ready()
-    end)
-    Logger:debug('addons.messages.ready', { addon = self.key })
+    end, delay, max)
+
+    Logger:debug_t('addons.messages.ready', { addon = self.key })
+end
+
+function Addon:wait_until_not_ready(delay, max)
+    delay = delay or self.not_ready_delay
+    max = max or self.not_ready_max
+
+    Logger:debug_t('addons.messages.wait_until_not_ready', { addon = self.key })
+    Debug:log_previous_call()
+
+    Ferret:wait_until(function()
+        return not self:is_ready()
+    end, delay, max)
+
+    Logger:debug_t('addons.messages.not_ready', { addon = self.key })
 end
 
 ---@return boolean
@@ -38,12 +59,30 @@ function Addon:is_visible()
     return IsAddonVisible(self.key)
 end
 
-function Addon:wait_until_visible()
-    Logger:debug('addons.messages.wait_until_visible', { addon = self.key })
+function Addon:wait_until_visible(delay, max)
+    delay = delay or self.visible_delay
+    max = max or self.visible_max
+
+    Logger:debug_t('addons.messages.wait_until_visible', { addon = self.key })
+    Debug:log_previous_call()
     Ferret:wait_until(function()
         return self:is_visible()
-    end)
-    Logger:debug('addons.messages.visible', { addon = self.key })
+    end, delay, max)
+
+    Logger:debug_t('addons.messages.visible', { addon = self.key })
+end
+
+function Addon:wait_until_not_visible(delay, max)
+    delay = delay or self.not_visible_delay
+    max = max or self.not_visible_max
+
+    Logger:debug_t('addons.messages.wait_until_not_visible', { addon = self.key })
+    Debug:log_previous_call()
+    Ferret:wait_until(function()
+        return not self:is_ready()
+    end, delay, max)
+
+    Logger:debug_t('addons.messages.not_visible', { addon = self.key })
 end
 
 ---@param ... integer
@@ -64,4 +103,23 @@ end
 function Addon:is_node_visible(...)
     Ferret:wait(0.0167)
     return IsNodeVisible(self.key, ...)
+end
+
+---@param update_visiblity boolean
+---@param ... integer
+function Addon:callback(update_visiblity, ...)
+    local command = self.key
+    if update_visiblity then
+        command = command .. ' true'
+    else
+        command = command .. ' false'
+    end
+    for k, v in ipairs({ ... }) do
+        command = command .. ' ' .. v
+    end
+
+    Logger:debug_t('addons.messages.callback', { command = command })
+    Debug:log_previous_call()
+
+    yield('/callback ' .. command)
 end

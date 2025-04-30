@@ -10,27 +10,36 @@ function WKSHud:new()
 end
 
 function WKSHud:open_mission_menu()
-    if WKSMission:is_visible() or WKSMissionInfomation:is_visible() then
+    if Addons.WKSMission:is_visible() or Addons.WKSMissionInfomation:is_visible() then
         return
     end
 
-    Ferret:callback(self, true, 11)
+    self:callback(true, 11)
 end
 
 function WKSHud:open_cosmic_research()
-    if WKSToolCustomize:is_visible() then
+    if Addons.WKSToolCustomize:is_visible() then
         return
     end
 
-    Ferret:callback(self, true, 15)
+    self:callback(true, 15)
 end
 
 function WKSHud:close_cosmic_research()
-    if not WKSToolCustomize:is_visible() then
+    if not Addons.WKSToolCustomize:is_visible() then
         return
     end
 
-    Ferret:callback(self, true, 15)
+    self:callback(true, 15)
+end
+
+function WKSHud:has_mission()
+    self:open_mission_menu()
+    Ferret:wait_until(function()
+        return Addons.WKSMission:is_visible() or Addons.WKSMissionInfomation:is_visible()
+    end)
+
+    return Addons.WKSMissionInfomation:is_visible()
 end
 
 return WKSHud()

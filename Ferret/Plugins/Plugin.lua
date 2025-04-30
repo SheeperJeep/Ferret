@@ -14,5 +14,5 @@ function Plugin:new(name, key)
 end
 
 function Plugin:init()
-    Logger:debug('plugin.messages.no_init', { name = self.name })
+    Logger:debug_t('plugin.messages.no_init', { name = self.name })
 end

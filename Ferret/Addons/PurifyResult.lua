@@ -11,7 +11,7 @@ function PurifyResult:new()
 end
 
 function PurifyResult:auto()
-    Ferret:callback(self, true, 0)
+    self:callback(true, 0)
 end
 
 return PurifyResult()

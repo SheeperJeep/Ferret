@@ -10,7 +10,7 @@ function SelectString:new()
 end
 
 function SelectString:select_index(index)
-    Ferret:callback(self, true, index)
+    self:callback(true, index)
 end
 
 return SelectString()

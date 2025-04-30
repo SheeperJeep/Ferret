@@ -3,7 +3,7 @@
 --        AUTHOR: Faye (OhKannaDuh)
 --------------------------------------------------------------------------------
 
----@enum Condition
+---@alias Condition integer
 Conditions = {
     Normal = 1,
     Mounted = 4,

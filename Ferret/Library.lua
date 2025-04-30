@@ -14,6 +14,9 @@ i18n.load(require('Ferret/i18n/de'))
 i18n.load(require('Ferret/i18n/fr'))
 i18n.load(require('Ferret/i18n/jp'))
 
+-- Mixins
+require('Ferret/Mixins/Translation')
+
 -- Data enums and objects
 require('Ferret/Data/Translatable')
 require('Ferret/Data/Conditions')
@@ -49,6 +52,7 @@ Pathfinding = require('Ferret/Pathfinding')
 SpearfishingHelper = require('Ferret/SpearfishingHelper')
 IO = require('Ferret/IO')
 Logger = require('Ferret/Logger')
+Debug = require('Ferret/Debug')
 Table = require('Ferret/Table')
 String = require('Ferret/String')
 

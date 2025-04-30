@@ -10,7 +10,7 @@ function SelectIconString:new()
 end
 
 function SelectIconString:select_index(index)
-    Ferret:callback(self, true, index)
+    self:callback(true, index)
 end
 
 return SelectIconString()

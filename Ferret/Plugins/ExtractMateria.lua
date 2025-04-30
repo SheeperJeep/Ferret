@@ -11,32 +11,32 @@ end
 
 function ExtractMateria:init()
     Ferret:subscribe(Hooks.PRE_LOOP, function(context)
-        Logger:debug('plugins.extract_materia.check')
+        Logger:debug_t('plugins.extract_materia.check')
 
         if not CanExtractMateria() then
-            Logger:debug('plugins.extract_materia.not_needed')
+            Logger:debug_t('plugins.extract_materia.not_needed')
             return
         end
 
-        if not Materialize:is_visible() then
-            Materialize:open()
-            Materialize:wait_until_ready()
+        if not Addons.Materialize:is_visible() then
+            Addons.Materialize:open()
+            Addons.Materialize:wait_until_ready()
         end
 
-        Logger:debug('plugins.extract_materia.extracting')
+        Logger:debug_t('plugins.extract_materia.extracting')
 
         while CanExtractMateria(100) do
-            if Materialize:is_visible() then
+            if Addons.Materialize:is_visible() then
                 Ferret:repeat_until(function()
-                    Materialize:click_first_slot()
+                    Addons.Materialize:click_first_slot()
                 end, function()
-                    return MaterializeDialog:is_visible()
+                    return Addons.MaterializeDialog:is_visible()
                 end)
 
                 Ferret:repeat_until(function()
-                    MaterializeDialog:yes()
+                    Addons.MaterializeDialog:yes()
                 end, function()
-                    return not MaterializeDialog:is_visible()
+                    return not Addons.MaterializeDialog:is_visible()
                 end)
             end
 
@@ -45,8 +45,8 @@ function ExtractMateria:init()
             end)
         end
 
-        Materialize:close()
-        Logger:debug('plugins.extract_materia.done')
+        Addons.Materialize:close()
+        Logger:debug_t('plugins.extract_materia.done')
     end)
 end
 

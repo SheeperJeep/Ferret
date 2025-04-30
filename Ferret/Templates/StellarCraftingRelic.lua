@@ -9,7 +9,7 @@ require('Ferret/CosmicExploration/CosmicExploration')
 StellarCraftingRelic = Ferret:extend()
 function StellarCraftingRelic:new()
     StellarCraftingRelic.super.new(self, i18n('templates.stellar_crafting_relic.name'))
-    self.template_version = Version(0, 7, 0)
+    self.template_version = Version(0, 8, 0)
 
     self.job_order = {
         Jobs.Carpenter,
@@ -45,6 +45,9 @@ function StellarCraftingRelic:new()
     self.blacklist = MissionList()
     self.auto_blacklist = true
 
+    self.minimum_acceptable_result = MissionResult.Gold
+    self.per_mission_acceptable_result = {}
+
     self.researchingway = Targetable(i18n('npcs.researchingway'))
 end
 
@@ -61,6 +64,14 @@ function StellarCraftingRelic:slow_mode()
     Mission.last_crafting_action_threshold = 20
 end
 
+function StellarCraftingRelic:get_acceptable_result(mission)
+    if self.per_mission_acceptable_result[mission.id] then
+        return self.per_mission_acceptable_result[mission.id]
+    end
+
+    return self.minimum_acceptable_result
+end
+
 function StellarCraftingRelic:setup()
     Logger:info(self.name .. ': ' .. self.template_version:to_string())
 
@@ -70,15 +81,15 @@ function StellarCraftingRelic:setup()
 end
 
 function StellarCraftingRelic:loop()
-    WKSHud:wait_until_ready()
+    Addons.WKSHud:wait_until_ready()
 
-    WKSHud:open_cosmic_research()
-    WKSToolCustomize:wait_until_ready()
+    Addons.WKSHud:open_cosmic_research()
+    Addons.WKSToolCustomize:wait_until_ready()
     Ferret:wait(1)
 
-    Logger:info('templates.stellar_crafting_relic.checking_relic_ranks')
+    Logger:info_t('templates.stellar_crafting_relic.checking_relic_ranks')
     local maxed = true
-    self.relic_ranks = WKSToolCustomize:get_relic_ranks()
+    self.relic_ranks = Addons.WKSToolCustomize:get_relic_ranks()
     for _, job in ipairs(self.job_order) do
         local rank = self.relic_ranks[job]
         if rank < 9 then
@@ -95,28 +106,28 @@ function StellarCraftingRelic:loop()
     end
 
     Ferret:wait(self.wait_timers.pre_open_mission_list)
-    WKSMission:open_basic_missions()
+    Addons.WKSMission:open_basic_missions()
     Ferret:wait(self.wait_timers.post_open_mission_list)
     if maxed then
-        Logger:info('templates.stellar_crafting_relic.maxed')
+        Logger:info_t('templates.stellar_crafting_relic.maxed')
         self:stop()
         return
     end
 
-    Logger:info('templates.stellar_crafting_relic.checking_relic_exp')
+    Logger:info_t('templates.stellar_crafting_relic.checking_relic_exp')
     -- Close and open to refresh exp bars
-    WKSHud:close_cosmic_research()
+    Addons.WKSHud:close_cosmic_research()
     Ferret:wait(1)
-    WKSHud:open_cosmic_research()
-    WKSToolCustomize:wait_until_ready()
+    Addons.WKSHud:open_cosmic_research()
+    Addons.WKSToolCustomize:wait_until_ready()
     Ferret:wait(1)
 
     local is_ready_to_upgrade = true
     local progress = {
-        WKSToolCustomize:get_exp_1(),
-        WKSToolCustomize:get_exp_2(),
-        WKSToolCustomize:get_exp_3(),
-        WKSToolCustomize:get_exp_4(),
+        Addons.WKSToolCustomize:get_exp_1(),
+        Addons.WKSToolCustomize:get_exp_2(),
+        Addons.WKSToolCustomize:get_exp_3(),
+        Addons.WKSToolCustomize:get_exp_4(),
     }
 
     for i, exp in ipairs(progress) do
@@ -131,55 +142,55 @@ function StellarCraftingRelic:loop()
         Ferret:wait(2)
         self.researchingway:interact()
         Ferret:wait(1)
-        Talk:progress_until_done()
+        Addons.Talk:progress_until_done()
         Ferret:wait(1)
-        SelectString:select_index(0)
+        Addons.SelectString:select_index(0)
         Ferret:wait(1)
-        SelectIconString:select_index(self.cosmic_exploration.job - 8)
+        Addons.SelectIconString:select_index(self.cosmic_exploration.job - 8)
         Ferret:wait(1)
-        SelectYesno:yes()
-        Talk:wait_until_ready()
+        Addons.SelectYesno:yes()
+        Addons.Talk:wait_until_ready()
         Ferret:wait(1)
-        Talk:progress_until_done()
+        Addons.Talk:progress_until_done()
         Ferret:wait(2)
 
         return
     end
 
-    local mission = WKSMission:get_best_available_mission(self.blacklist)
+    local mission = Addons.WKSMission:get_best_available_mission(self.blacklist)
     if mission == nil then
-        Logger:warn('templates.stellar_crafting_relic.failed_to_get_mission')
+        Logger:warn_t('templates.stellar_crafting_relic.failed_to_get_mission')
         Logger:info('Quiting Ferret ' .. self.verion:to_string())
         self:stop()
         return
     end
 
-    Logger:info('templates.stellar_crafting_relic.mission', { mission = mission:to_string() })
+    Logger:info_t('templates.stellar_crafting_relic.mission', { mission = mission:to_string() })
 
     mission:start()
 
     Ferret:wait(self.wait_timers.post_mission_start)
-    WKSRecipeNotebook:wait_until_ready()
+    Addons.WKSRecipeNotebook:wait_until_ready()
     self:emit(Hooks.PRE_CRAFT, {
         mission = mission,
     })
 
-    WKSHud:open_mission_menu()
+    Addons.WKSHud:open_mission_menu()
 
-    local success, reason = mission:handle()
-    if not success then
-        Logger:warn('templates.stellar_crafting_relic.mission_failed', { mission = mission:to_string() })
+    local result, reason = mission:handle()
+    if result.tier < self:get_acceptable_result(mission) then
+        Logger:warn_t('templates.stellar_crafting_relic.mission_failed', { mission = mission:to_string() })
         Logger:warn('Reason: ' .. reason)
 
         if self.auto_blacklist then
-            Logger:warn('templates.stellar_crafting_relic.mission_blacklisting', { mission = mission.name:get() })
+            Logger:warn_t('templates.stellar_crafting_relic.mission_blacklisting', { mission = mission.name:get() })
             self.blacklist:add(mission)
         end
 
-        if Synthesis:is_visible() then
-            Synthesis:quit()
-            Synthesis:wait_until_not_ready()
-            WKSMissionInfomation:wait_until_ready()
+        if Addons.Synthesis:is_visible() then
+            Addons.Synthesis:quit()
+            Addons.Synthesis:wait_until_not_ready()
+            Addons.WKSMissionInfomation:wait_until_ready()
             mission:abandon()
         else
             Ferret:wait(3)
@@ -189,12 +200,15 @@ function StellarCraftingRelic:loop()
         return
     end
 
-    Logger:debug('templates.stellar_crafting_relic.mission_complete')
+    Logger:debug_t('templates.stellar_crafting_relic.mission_complete')
 
+    Addons.WKSHud:open_mission_menu()
+    Character:wait_until_done_crafting()
+    Addons.WKSMissionInfomation:wait_until_ready()
     self:repeat_until(function()
         mission:report()
     end, function()
-        return not mission:is_complete()
+        return not Addons.WKSMissionInfomation:is_visible()
     end)
 end
 

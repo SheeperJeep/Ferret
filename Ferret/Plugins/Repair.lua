@@ -13,13 +13,13 @@ end
 
 function Repair:init()
     Ferret:subscribe(Hooks.PRE_LOOP, function(context)
-        Logger:debug('plugins.repair.check')
+        Logger:debug_t('plugins.repair.check')
         if not NeedsRepair(self.threshold) then
-            Logger:debug('plugins.repair.not_needed')
+            Logger:debug_t('plugins.repair.not_needed')
             return
         end
 
-        Logger:debug('plugins.repair.repairing')
+        Logger:debug_t('plugins.repair.repairing')
         while not IsAddonVisible('Repair') do
             Actions.Repair:execute()
             Ferret:wait(0.5)
@@ -28,8 +28,8 @@ function Repair:init()
         yield('/callback Repair true 0')
         Ferret:wait(0.1)
 
-        if SelectYesno:is_visible() then
-            SelectYesno:yes()
+        if Addons.SelectYesno:is_visible() then
+            Addons.SelectYesno:yes()
             Ferret:wait(0.1)
         end
 
@@ -39,7 +39,7 @@ function Repair:init()
 
         Ferret:wait(1)
         yield('/callback Repair true -1')
-        Logger:debug('plugins.repair.done')
+        Logger:debug_t('plugins.repair.done')
     end)
 end
 

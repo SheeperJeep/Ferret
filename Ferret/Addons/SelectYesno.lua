@@ -10,7 +10,7 @@ function SelectYesno:new()
 end
 
 function SelectYesno:yes()
-    Ferret:callback(self, true, 0)
+    self:callback(true, 0)
 end
 
 return SelectYesno()

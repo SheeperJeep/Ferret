@@ -50,7 +50,7 @@ end
 function Spearfishing:loop()
     local node = Pathfinding:next()
     if node == nil then
-        Logger:warn('templates.spearfishing.no_node')
+        Logger:warn_t('templates.spearfishing.no_node')
         self:stop()
         return
     end

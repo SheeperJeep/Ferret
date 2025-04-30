@@ -3,7 +3,7 @@
 --        AUTHOR: Faye (OhKannaDuh)
 --------------------------------------------------------------------------------
 
----@enum GameObject
+---@alias GameObject integer
 Objects = {
     None = 0,
     Player = 1,

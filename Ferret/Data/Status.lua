@@ -3,8 +3,11 @@
 --        AUTHOR: Faye (OhKannaDuh)
 --------------------------------------------------------------------------------
 
----@enum Status
+---@alias Status integer
 Status = {
     WellFed = 48,
     Medicated = 49,
+    CollectorsHighStandard = 2418,
+    EurekaMoment = 2765,
+    CollectorsStandard = 3911,
 }

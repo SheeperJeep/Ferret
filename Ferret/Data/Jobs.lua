@@ -3,7 +3,7 @@
 --        AUTHOR: Faye (OhKannaDuh)
 --------------------------------------------------------------------------------
 
----@enum Job integer
+---@alias Job integer
 Jobs = {
     Unknown = -1,
     Carpenter = 8,

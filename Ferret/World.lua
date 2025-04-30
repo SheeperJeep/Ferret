@@ -24,11 +24,11 @@ function World:is_hour_between(a, b)
 end
 
 function World:wait_until(hour)
-    Logger:debug('world.waiting', { hour = hour })
+    Logger:debug_t('world.waiting', { hour = hour })
     Ferret:wait_until(function()
         return self:get_current_hour() == hour
     end, 3)
-    Logger:debug('world.done_waiting')
+    Logger:debug_t('world.done_waiting')
 end
 
 --- Checks the minimap for a special gathering node

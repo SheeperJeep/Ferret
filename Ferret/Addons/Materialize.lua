@@ -15,11 +15,11 @@ function Materialize:open()
 end
 
 function Materialize:close()
-    Ferret:callback(self, true, -1)
+    self:callback(true, -1)
 end
 
 function Materialize:click_first_slot()
-    Ferret:callback(self, true, 2)
+    self:callback(true, 2)
 end
 
 return Materialize()

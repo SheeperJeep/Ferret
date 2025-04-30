@@ -10,7 +10,7 @@ function Synthesis:new()
 end
 
 function Synthesis:quit()
-    Ferret:callback(self, true, -1)
+    self:callback(true, -1)
 end
 
 return Synthesis()

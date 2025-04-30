@@ -35,8 +35,7 @@ end
 
 ---@return boolean
 function Gathering:has_eureka_moment()
-    -- @todo
-    return HasStatus('Eureka Moment')
+    return Character:has_status(Status.EurekaMoment)
 end
 
 function Gathering:wait_to_start(max)
@@ -97,7 +96,7 @@ end
 
 ---@return boolean
 function Gathering:has_collectors_standard()
-    return HasStatus('Collector\'s High Standard') or HasStatus('Collector\'s Standard')
+    return Character:has_status({ Status.CollectorsHighStandard, Status.CollectorsStandard })
 end
 
 ---@return boolean

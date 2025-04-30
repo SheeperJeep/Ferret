@@ -27,7 +27,6 @@ end
 ---@param index integer
 ---@return Node|nil
 function Pathfinding:get(index)
-    Logger:info(Table:keys(self.nodes))
     return self.nodes[index]
 end
 
@@ -64,12 +63,19 @@ end
 ---@param node Node?
 function Pathfinding:fly_to(node)
     node = node or self:current()
+    if node == nil then
+        return
+    end
+
     yield('/vnavmesh flyto ' .. node.x .. ' ' .. node.y .. ' ' .. node.z)
 end
 
 ---@param node Node?
 function Pathfinding:walk_to(node)
     node = node or self:current()
+    if node == nil then
+        return
+    end
 
     if self:distance() >= self.distance_for_sprint then
         Actions.Sprint:execute()

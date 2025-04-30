@@ -13,6 +13,6 @@ function Action:new(name)
 end
 
 function Action:execute()
-    Logger:debug('actions.messages.executing', { action = self.name })
+    Logger:debug_t('actions.messages.executing', { action = self.name })
     Ferret:action(self.name)
 end

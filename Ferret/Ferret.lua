@@ -10,7 +10,7 @@ require('Ferret/Library')
 ---@field run boolean
 ---@field language string en/de/fr/jp
 ---@field plugins Plugin[]
----@field hook_subscriptions { [Hook]: fun(table)[] }
+---@field hook_subscriptions table<Hook, fun(table)[]>
 ---@field timer Timer
 Ferret = Object:extend()
 function Ferret:new(name)
@@ -20,12 +20,12 @@ function Ferret:new(name)
     self.plugins = {}
     self.hook_subscriptions = {}
     self.timer = Timer()
-    self.version = Version(0, 8, 0)
+    self.version = Version(0, 9, 0)
 end
 
 ---@param plugin Plugin
 function Ferret:add_plugin(plugin)
-    Logger:debug('Adding plugin: ' .. plugin.name)
+    Logger:debug_t('Adding plugin: ' .. plugin.name)
     plugin:init(self)
     self.plugins[plugin.key] = plugin
 end
@@ -73,32 +73,33 @@ end
 
 ---Stops the loop from running
 function Ferret:stop()
-    Logger:debug('ferret.stopping')
+    Logger:debug_t('ferret.stopping')
     self.run = false
 end
 
 ---Base setup function
 function Ferret:setup()
-    Logger:warn('ferret.no_setup')
+    Logger:warn_t('ferret.no_setup')
 end
 
 ---Base loop function
 function Ferret:loop()
-    Logger:warn('ferret.no_loop')
+    Logger:warn_t('ferret.no_loop')
     self:stop()
 end
 
 ---Starts the loop
 function Ferret:start()
     self.timer:start()
-    Logger:info('Ferret version: ' .. self.version:to_string())
-    Logger:debug('ferret.running_setup')
+    Logger:info_t('version', { name = 'Ferret', version = self.version:to_string() })
+
+    Logger:debug_t('ferret.running_setup')
     if not self:setup() then
-        Logger:error('ferret.setup_error')
+        Logger:error_t('ferret.setup_error')
         return
     end
 
-    Logger:debug('ferret.starting_loop')
+    Logger:debug_t('ferret.starting_loop')
     while self.run do
         self:emit(Hooks.PRE_LOOP)
         self:loop()
@@ -106,13 +107,12 @@ function Ferret:start()
             self:emit(Hooks.POST_LOOP)
         end
     end
-    Logger:debug('Done')
 end
 
 ---@param hook Hook
 ---@param callback fun(table)
 function Ferret:subscribe(hook, callback)
-    Logger:debug('ferret.hook_subscription', { hook = hook })
+    Logger:debug_t('ferret.hook_subscription', { hook = hook })
     if not self.hook_subscriptions[hook] then
         self.hook_subscriptions[hook] = {}
     end
@@ -123,7 +123,7 @@ end
 ---@param event Hook
 ---@param context table?
 function Ferret:emit(event, context)
-    Logger:debug('ferret.emit_event', { event = event })
+    Logger:debug_t('ferret.emit_event', { event = event })
     if not self.hook_subscriptions[event] then
         return
     end
@@ -152,6 +152,6 @@ function Ferret:callback(addon, update_visiblity, ...)
         command = command .. ' ' .. v
     end
 
-    Logger:debug('ferret.callback', { command = command })
+    Logger:debug_t('ferret.callback', { command = command })
     yield(command)
 end

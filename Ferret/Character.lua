@@ -9,10 +9,10 @@ local Character = Object:extend()
 ---@param status Status
 ---@return boolean
 function Character:has_status(status)
-    return GetStatusTimeRemaining(status) ~= nil
+    return HasStatusId(status)
 end
 
----@param condition Condition
+---@param condition Condition|Condition[]
 ---@return boolean
 function Character:has_condition(condition)
     return GetCharacterCondition(condition)

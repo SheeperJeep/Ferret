@@ -3,7 +3,7 @@
 --        AUTHOR: Faye (OhKannaDuh)
 --------------------------------------------------------------------------------
 
----@class Mission : Object
+---@class Mission : Object, Translation
 ---@field id integer
 ---@field name Translatable
 ---@field job integer
@@ -19,6 +19,8 @@
 ---@field has_multiple_recipes boolean
 ---@field multi_craft_config table
 Mission = Object:extend()
+Mission:implement(Translation)
+
 Mission.wait_timers = {
     pre_synthesize = 0,
     post_synthesize = 0,
@@ -46,6 +48,8 @@ function Mission:new(id, name, job, class)
     self.exp_reward = {}
     self.has_multiple_recipes = false
     self.multi_craft_config = {}
+
+    self.translation_path = 'modules.cosmic_exploration.mission'
 end
 
 ---@param name string
@@ -138,27 +142,28 @@ function Mission:with_multi_craft_config(config)
 end
 
 function Mission:start()
-    WKSMission:wait_until_ready()
-    WKSMission:start_mission(self.id)
+    Addons.WKSMission:wait_until_ready()
+    Addons.WKSMission:start_mission(self.id)
 end
 
 ---@return boolean
 function Mission:is_complete()
-    local current_score, gold_star_requirement = ToDoList:get_stellar_mission_scores()
-    if current_score and gold_star_requirement then
-        return current_score >= gold_star_requirement
-    end
+    return Addons.ToDoList:get_stellar_mission_scores().tier == MissionResult.Gold
+        or not self:has_base_crafting_material()
+end
 
-    return false
+---@return MissionScore
+function Mission:get_mission_score()
+    return Addons.ToDoList:get_stellar_mission_scores()
 end
 
 function Mission:wait_for_crafting_ui_or_mission_complete()
-    Logger:debug('modules.cosmic_exploration.mission.waiting_for_crafting_ui_or_mission_complete')
+    self:log_debug('waiting_for_crafting_ui_or_mission_complete')
     Ferret:wait_until(function()
-        return WKSRecipeNotebook:is_ready() or self:is_complete()
+        return Addons.WKSRecipeNotebook:is_ready() or self:is_complete()
     end)
     Ferret:wait(1)
-    Logger:debug('modules.cosmic_exploration.mission.crafting_ui_or_mission_complete')
+    self:log_debug('crafting_ui_or_mission_complete')
 end
 
 ---@return boolean
@@ -168,18 +173,20 @@ end
 
 ---@return boolean, string
 function Mission:craft_current()
-    Logger:debug('modules.cosmic_exploration.mission.crafting_current')
+    local name = Addons.WKSRecipeNotebook:get_current_recipe_name()
+    self:log_debug('crafting_current', { name = name })
     local timer = Sandtimer(self.last_crafting_action_threshold)
 
-    WKSRecipeNotebook:wait_until_ready()
+    Addons.WKSRecipeNotebook:wait_until_ready()
 
-    -- Check if we have crarfting materials
-    if not self:has_base_crafting_material() then
-        return self:is_complete(), 'Ran out of materials'
+    local craftable = Addons.WKSRecipeNotebook:get_current_craftable_amount()
+    if craftable <= 0 then
+        return false, self:translate('not_craftable')
     end
+
     Ferret:wait(Mission.wait_timers.pre_synthesize)
-    WKSRecipeNotebook:synthesize()
-    Synthesis:wait_until_ready()
+    Addons.WKSRecipeNotebook:synthesize()
+    Addons.Synthesis:wait_until_ready()
 
     timer:flip()
     repeat -- While crafting window is visible
@@ -188,56 +195,65 @@ function Mission:craft_current()
         end
 
         if timer:has_run_out() then
-            return self:is_complete(), 'Too much time passed since last detected crafting action'
+            return false, self:translate('timeout')
         end
 
         Ferret:wait(0.2)
-    until not Synthesis:is_visible()
+    until not Addons.Synthesis:is_visible()
 
-    return true, 'Success'
+    return true, self:translate('finished_craft')
 end
 
----@return boolean, string
+---@return MissionScore, string
 function Mission:single_recipe()
-    Logger:debug('modules.cosmic_exploration.mission.recipe_count', { count = 1 })
-
+    self:log_debug('recipe_count', { count = 1 })
+    local crafted = 0
     repeat
-        WKSRecipeNotebook:wait_until_ready()
-        local result, reason = self:craft_current()
-        if not result then
-            return result, reason
+        if not self:has_base_crafting_material() then
+            return self:get_mission_score(), self:translate('no_more_to_craft', { crafted = crafted })
         end
 
+        Addons.WKSRecipeNotebook:wait_until_ready()
+        local should_continue, reason = self:craft_current()
+        if not should_continue then
+            return self:get_mission_score(), reason
+        end
+
+        crafted = crafted + 1
     until self:is_complete()
 
-    return self:is_complete(), 'Success'
+    return self:get_mission_score(), self:translate('finished', { crafted = crafted })
 end
 
----@return boolean, string
+---@return MissionScore, string
 function Mission:multi_recipe()
-    Logger:debug('modules.cosmic_exploration.mission.recipe_count', { count = Table:count(self.multi_craft_config) })
+    self:log_debug('recipe_count', { count = Table:count(self.multi_craft_config) })
+    local crafted = 0
 
     repeat
+        if not self:has_base_crafting_material() then
+            return self:get_mission_score(), self:translate('no_more_to_craft', { crafted = crafted })
+        end
+
         for index, count in pairs(self.multi_craft_config) do
-            WKSRecipeNotebook:wait_until_ready()
-            WKSRecipeNotebook:set_index(index)
-            WKSRecipeNotebook:set_hq()
+            Addons.WKSRecipeNotebook:wait_until_ready()
+            Addons.WKSRecipeNotebook:set_index(index)
+            Addons.WKSRecipeNotebook:set_hq()
             for i = 1, count do
-                WKSRecipeNotebook:wait_until_ready()
-                local result, reason = self:craft_current()
-                if not result then
-                    return result, reason
-                end
+                Addons.WKSRecipeNotebook:wait_until_ready()
+                self:craft_current()
+
+                crafted = crafted + 1
             end
         end
     until self:is_complete()
 
-    return self:is_complete(), 'Success'
+    return self:get_mission_score(), self:translate('finished', { crafted = crafted })
 end
 
----@return boolean, string
+---@return MissionScore, string
 function Mission:handle()
-    Logger:debug('modules.cosmic_exploration.mission.starting_mission', { mission = self.name:get() })
+    self:log_debug('starting_mission', { mission = self.name:get() })
 
     if not self.has_multiple_recipes then
         return self:single_recipe()
@@ -247,13 +263,13 @@ function Mission:handle()
 end
 
 function Mission:report()
-    WKSHud:open_mission_menu()
-    WKSMissionInfomation:report()
+    Addons.WKSHud:open_mission_menu()
+    Addons.WKSMissionInfomation:report()
 end
 
 function Mission:abandon()
-    WKSHud:open_mission_menu()
-    WKSMissionInfomation:abandon()
+    Addons.WKSHud:open_mission_menu()
+    Addons.WKSMissionInfomation:abandon()
 end
 
 ---@return string

@@ -3,53 +3,55 @@
 --        AUTHOR: Faye (OhKannaDuh)
 --------------------------------------------------------------------------------
 
----@class WKSMission : Addon
+---@class WKSMission : Addon, Translation
 local WKSMission = Addon:extend()
+WKSMission:implement(Translation)
+
 function WKSMission:new()
     WKSMission.super.new(self, 'WKSMission')
+    self.translation_path = 'modules.cosmic_exploration.wks_mission'
 end
 
 function WKSMission:start_mission(id)
     self:wait_until_ready()
-
     repeat
         if self:is_ready() then
-            Ferret:callback(self, true, 13, id)
+            self:callback(true, 13, id)
         end
         Ferret:wait(0.1)
-    until SelectYesno:is_visible()
+    until Addons.SelectYesno:is_visible()
 
     repeat
-        if SelectYesno:is_ready() then
-            SelectYesno:yes()
+        if Addons.SelectYesno:is_ready() then
+            Addons.SelectYesno:yes()
         end
         Ferret:wait(0.1)
     until not self:is_ready()
 end
 
 function WKSMission:open()
-    Logger:debug('Opening mission ui')
-    WKSHud:open_mission_menu()
+    self:log_debug('open')
+    Addons.WKSHud:open_mission_menu()
     self:wait_until_ready()
     Ferret:wait(1)
 end
 
 function WKSMission:open_basic_missions()
     self:open()
-    Logger:debug('modules.cosmic_exploration.wks_mission.open_basic')
-    Ferret:callback(self, true, 15, 0)
+    self:log_debug('open_basic')
+    self:callback(true, 15, 0)
 end
 
 function WKSMission:open_critical_missions()
     self:open()
-    Logger:debug('modules.cosmic_exploration.wks_mission.open_critical')
-    Ferret:callback(self, true, 15, 1)
+    self:log_debug('open_critical')
+    self:callback(true, 15, 1)
 end
 
 function WKSMission:open_provisional_missions()
     self:open()
-    Logger:debug('modules.cosmic_exploration.wks_mission.open_provisional')
-    Ferret:callback(self, true, 15, 2)
+    self:log_debug('open_provisional')
+    self:callback(true, 15, 2)
 end
 
 function WKSMission:get_mission_name_by_index(index)
@@ -57,13 +59,13 @@ function WKSMission:get_mission_name_by_index(index)
 end
 
 function WKSMission:get_available_missions()
-    Logger:debug('modules.cosmic_exploration.wks_mission.getting_missions')
+    self:log_debug('getting_missions')
 
     local missions = MissionList()
     local names = {}
 
     for tab = 0, 2 do
-        Ferret:callback(self, true, 15, tab)
+        self:callback(true, 15, tab)
         Ferret:wait(0.5)
 
         for index = 2, 24 do
@@ -72,9 +74,10 @@ function WKSMission:get_available_missions()
                 break
             end
 
-            Logger:debug('modules.cosmic_exploration.wks_mission.mission_found', { mission = mission_name })
+            self:log_debug('.mission_found', { mission = mission_name })
             table.insert(names, mission_name)
 
+            ---@diagnostic disable-next-line: undefined-field
             local mission = Ferret.cosmic_exploration.mission_list:find_by_name(mission_name)
             if mission ~= nil then
                 missions:add(mission)
@@ -121,25 +124,25 @@ function WKSMission:get_best_available_mission(blacklist)
         return best_index
     end
 
-    WKSHud:close_cosmic_research()
+    Addons.WKSHud:close_cosmic_research()
     Ferret:wait(1)
 
-    WKSHud:open_cosmic_research()
-    WKSHud:open_mission_menu()
+    Addons.WKSHud:open_cosmic_research()
+    Addons.WKSHud:open_mission_menu()
     Ferret:wait(1)
 
     local progress = {
-        WKSToolCustomize:get_exp_1(),
-        WKSToolCustomize:get_exp_2(),
-        WKSToolCustomize:get_exp_3(),
-        WKSToolCustomize:get_exp_4(),
+        Addons.WKSToolCustomize:get_exp_1(),
+        Addons.WKSToolCustomize:get_exp_2(),
+        Addons.WKSToolCustomize:get_exp_3(),
+        Addons.WKSToolCustomize:get_exp_4(),
     }
 
     local rewards = {}
     local missions = self:get_available_missions()
     for index, mission in pairs(missions.missions) do
         if not blacklist:has_id(mission.id) then
-            Logger:info('modules.cosmic_exploration.wks_mission.not_blacklisted', { mission = mission.name:get() })
+            self:log_info('not_blacklisted', { mission = mission.name:get() })
             local r = {}
             for _, reward in pairs(mission.exp_reward) do
                 r[reward.tier] = reward.amount
@@ -147,7 +150,7 @@ function WKSMission:get_best_available_mission(blacklist)
 
             rewards[index] = r
         else
-            Logger:info('modules.cosmic_exploration.wks_mission.blacklisted', { mission = mission.name:get() })
+            self:log_info('blacklisted', { mission = mission.name:get() })
         end
     end
 
