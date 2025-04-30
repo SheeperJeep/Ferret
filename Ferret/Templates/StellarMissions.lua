@@ -59,6 +59,13 @@ function StellarMissions:create_job_list_by_ids(ids)
     return self.cosmic_exploration.mission_list:filter_by_ids(ids)
 end
 
+function StellarMissions:create_job_list_by_name_and_job(names, job)
+    return self.cosmic_exploration.mission_list:filter(function(mission)
+        return Table:contains(names, mission.name:get()) and mission.job == job
+    end)
+end
+
+
 function StellarMissions:get_acceptable_result(mission)
     if self.per_mission_acceptable_result[mission.id] then
         return self.per_mission_acceptable_result[mission.id]
