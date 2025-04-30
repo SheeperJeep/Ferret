@@ -139,7 +139,7 @@ function StellarMissions:loop()
             Logger:warn('Reason: ' .. reason)
 
             if self.stop_on_failure then
-                Logger:info('Quiting Ferret ' .. self.verion:to_string())
+                Logger:info('Quiting Ferret ' .. self.version:to_string())
                 self:stop()
             end
             return
