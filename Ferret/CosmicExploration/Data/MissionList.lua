@@ -149,6 +149,11 @@ function MissionList:get_overlap(other)
     return overlap
 end
 
+---@return boolean
+function MissionList:is_empty()
+    return Table:is_empty(self.missions)
+end
+
 ---@return string
 function MissionList:to_string()
     local missions = {}

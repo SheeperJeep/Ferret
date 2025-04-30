@@ -80,6 +80,7 @@ return {
                     recipe_index = 'Setting recipe index to %{index}',
                     crafting = 'Crafting (%{index}/%{count})',
                     starting_mission = 'Starting mission: %{mission}',
+                    crafting_current = 'Crafing currnetly selected recipe.',
                 },
             },
         },

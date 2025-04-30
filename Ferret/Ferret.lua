@@ -20,7 +20,7 @@ function Ferret:new(name)
     self.plugins = {}
     self.hook_subscriptions = {}
     self.timer = Timer()
-    self.version = Version(0, 7, 2)
+    self.version = Version(0, 8, 0)
 end
 
 ---@param plugin Plugin
@@ -102,7 +102,9 @@ function Ferret:start()
     while self.run do
         self:emit(Hooks.PRE_LOOP)
         self:loop()
-        self:emit(Hooks.POST_LOOP)
+        if self.run then
+            self:emit(Hooks.POST_LOOP)
+        end
     end
     Logger:debug('Done')
 end

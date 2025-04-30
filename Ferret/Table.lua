@@ -34,6 +34,10 @@ end
 ---@param subject T[]
 ---@return T|nil
 function Table:random(subject)
+    if Table:is_empty(subject) then
+        return nil
+    end
+
     local keys = {}
     for key, _ in pairs(subject) do
         table.insert(keys, key)

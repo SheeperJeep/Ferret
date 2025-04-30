@@ -28,6 +28,7 @@ require('Ferret/Data/Node')
 -- Other classes
 require('Ferret/Targetable')
 require('Ferret/Timer')
+require('Ferret/Sandtimer')
 
 -- Base plugin
 require('Ferret/Plugins/Plugin')

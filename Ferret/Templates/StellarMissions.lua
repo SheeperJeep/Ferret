@@ -17,7 +17,7 @@ function StellarMissions:new()
 
     self.mission_list = MissionList()
     self.mission_order = MissionOrder.TopPriority
-    self.template_version = Version(2, 3, 2)
+    self.template_version = Version(2, 4, 0)
 
     self.cosmic_exploration = CosmicExploration()
 
@@ -80,11 +80,20 @@ function StellarMissions:loop()
             end
         end
         Logger:debug('Selecting mission to abandon')
+
         local class = Table:random(classes)
+        Logger:debug('Grabbing random mission with class: ' .. class)
         local class_missions = available_missions:filter_by_class(class)
+        Logger:debug('    Generated list of count: ' .. Table:count(available_missions.mission))
         local mission = class_missions:random()
         if mission == nil then
             mission = available_missions:random()
+        end
+
+        if mission == nil then
+            Logger:error('Error occured when trying to find a mission to abandon')
+            self:stop()
+            return
         end
 
         Logger:debug('mission: ' .. mission:to_string())
