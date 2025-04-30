@@ -9,7 +9,7 @@ require('Ferret/CosmicExploration/CosmicExploration')
 StellarCraftingRelic = Ferret:extend()
 function StellarCraftingRelic:new()
     StellarCraftingRelic.super.new(self, i18n('templates.stellar_crafting_relic.name'))
-    self.template_version = Version(0, 6, 1)
+    self.template_version = Version(0, 6, 2)
 
     self.job_order = {
         Jobs.Carpenter,
@@ -43,6 +43,7 @@ function StellarCraftingRelic:new()
     }
 
     self.blacklist = MissionList()
+    self.auto_blacklist = true
 
     self.researchingway = Targetable(i18n('npcs.researchingway'))
 end
@@ -57,7 +58,7 @@ function StellarCraftingRelic:slow_mode()
 
     Mission.wait_timers.pre_synthesize = 1
     Mission.wait_timers.post_synthesize = 1
-    Mission.last_crafting_action_threshold = 10
+    Mission.last_crafting_action_threshold = 20
 end
 
 function StellarCraftingRelic:setup()
@@ -147,7 +148,8 @@ function StellarCraftingRelic:loop()
 
     local mission = WKSMission:get_best_available_mission(self.blacklist)
     if mission == nil then
-        Logger:error('templates.stellar_crafting_relic.failed_to_get_mission')
+        Logger:warn('templates.stellar_crafting_relic.failed_to_get_mission')
+        Logger:info('Quiting Ferret ' .. self.verion:to_string())
         self:stop()
         return
     end
@@ -162,11 +164,15 @@ function StellarCraftingRelic:loop()
 
     WKSHud:open_mission_menu()
 
-    if not mission:handle() then
-        Logger:error('templates.stellar_crafting_relic.mission_failed', { mission = mission:to_string() })
-        Logger:error('templates.stellar_crafting_relic.mission_blacklisting', { mission = mission.name:get() })
+    local success, reason = mission:handle()
+    if not success then
+        Logger:warn('templates.stellar_crafting_relic.mission_failed', { mission = mission:to_string() })
+        Logger:warn('Reason: ' .. reason)
 
-        self.blacklist:add(mission)
+        if self.auto_blacklist then
+            Logger:warn('templates.stellar_crafting_relic.mission_blacklisting', { mission = mission.name:get() })
+            self.blacklist:add(mission)
+        end
 
         if Synthesis:is_visible() then
             Synthesis:quit()

@@ -24,7 +24,7 @@ Mission.wait_timers = {
     post_synthesize = 0,
 }
 
-Mission.last_crafting_action_threshold = 5
+Mission.last_crafting_action_threshold = 15
 
 ---@param id integer
 ---@param name Translatable
@@ -48,21 +48,21 @@ function Mission:new(id, name, job, class)
     self.multi_craft_config = {}
 end
 
----@param name Translatable
+---@param name string
 ---@return Mission
 function Mission:with_de_name(name)
     self.name = self.name:with_de(name)
     return self
 end
 
----@param name Translatable
+---@param name string
 ---@return Mission
 function Mission:with_fr_name(name)
     self.name = self.name:with_fr(name)
     return self
 end
 
----@param name Translatable
+---@param name string
 ---@return Mission
 function Mission:with_jp_name(name)
     self.name = self.name:with_jp(name)
@@ -161,7 +161,7 @@ function Mission:wait_for_crafting_ui_or_mission_complete()
     Logger:debug('modules.cosmic_exploration.mission.crafting_ui_or_mission_complete')
 end
 
----@return boolean
+---@return boolean, string
 function Mission:single_recipe()
     Logger:debug('modules.cosmic_exploration.mission.recipe_count', { count = 1 })
     local timer = Timer()
@@ -170,7 +170,7 @@ function Mission:single_recipe()
     repeat
         if WKSRecipeNotebook:is_ready() then
             if GetItemCount(48233) <= 0 then
-                return self:is_complete()
+                return self:is_complete(), 'Ran out of materials'
             end
 
             Ferret:wait(Mission.wait_timers.pre_synthesize)
@@ -183,20 +183,20 @@ function Mission:single_recipe()
         end
 
         if timer:seconds() >= Mission.last_crafting_action_threshold then
-            return self:is_complete()
+            return self:is_complete(), 'Too much time passed since last detected crafting action'
         end
 
-        -- if ToDoList:get_time_remaining() <= 0 then
-        --     return self:is_complete()
-        -- end
+        if ToDoList:get_time_remaining() <= 0 then
+            return self:is_complete(), 'Ran out of time'
+        end
 
         Ferret:wait(0.5)
     until self:is_complete()
 
-    return self:is_complete()
+    return self:is_complete(), 'Success'
 end
 
----@return boolean
+---@return boolean, string
 function Mission:multi_recipe()
     Logger:debug('modules.cosmic_exploration.mission.recipe_count', { count = Table:count(self.multi_craft_config) })
     local timer = Timer()
@@ -204,7 +204,7 @@ function Mission:multi_recipe()
 
     repeat
         if GetItemCount(48233) <= 0 then
-            return self:is_complete()
+            return self:is_complete(), 'Ran out of materials'
         end
 
         for index, count in pairs(self.multi_craft_config) do
@@ -214,12 +214,12 @@ function Mission:multi_recipe()
                 end
 
                 if timer:seconds() >= Mission.last_crafting_action_threshold then
-                    return self:is_complete()
+                    return self:is_complete(), 'Too much time passed since last detected crafting action'
                 end
 
-                -- if ToDoList:get_time_remaining() <= 0 then
-                --     return self:is_complete()
-                -- end
+                if ToDoList:get_time_remaining() <= 0 then
+                    return self:is_complete(), 'Ran out of time'
+                end
 
                 Ferret:wait(0.5)
             until WKSRecipeNotebook:is_ready() or self:is_complete()
@@ -237,12 +237,12 @@ function Mission:multi_recipe()
                         end
 
                         if timer:seconds() >= Mission.last_crafting_action_threshold then
-                            return self:is_complete()
+                            return self:is_complete(), 'Too much time passed since last detected crafting action'
                         end
 
-                        -- if ToDoList:get_time_remaining() <= 0 then
-                        --     return self:is_complete()
-                        -- end
+                        if ToDoList:get_time_remaining() <= 0 then
+                            return self:is_complete(), 'Ran out of time'
+                        end
 
                         Ferret:wait(0.5)
                     until WKSRecipeNotebook:is_ready() or self:is_complete()
@@ -261,10 +261,10 @@ function Mission:multi_recipe()
         end
     until self:is_complete()
 
-    return self:is_complete()
+    return self:is_complete(), 'Success'
 end
 
----@return boolean
+---@return boolean, string
 function Mission:handle()
     Logger:debug('modules.cosmic_exploration.mission.starting_mission', { mission = self.name:get() })
 

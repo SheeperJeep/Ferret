@@ -17,7 +17,7 @@ function StellarMissions:new()
 
     self.mission_list = MissionList()
     self.mission_order = MissionOrder.TopPriority
-    self.template_version = Version(2, 3, 1)
+    self.template_version = Version(2, 3, 2)
 
     self.cosmic_exploration = CosmicExploration()
 
@@ -39,7 +39,7 @@ function StellarMissions:slow_mode()
 
     Mission.wait_timers.pre_synthesize = 1
     Mission.wait_timers.post_synthesize = 1
-    Mission.last_crafting_action_threshold = 10
+    Mission.last_crafting_action_threshold = 20
 end
 
 function StellarMissions:create_job_list(callback)
@@ -117,8 +117,11 @@ function StellarMissions:loop()
 
         WKSHud:open_mission_menu()
 
-        if not mission:handle() then
-            Logger:error('Mission failed: ' .. mission:to_string())
+        local success, reason = mission:handle()
+        if not success then
+            Logger:warn('Mission failed: ' .. mission:to_string())
+            Logger:warn('Reason: ' .. reason)
+            Logger:info('Quiting Ferret ' .. self.verion:to_string())
             self:stop()
             return
         end
