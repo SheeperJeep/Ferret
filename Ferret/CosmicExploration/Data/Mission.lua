@@ -186,9 +186,9 @@ function Mission:single_recipe()
             return self:is_complete()
         end
 
-        if ToDoList:get_time_remaining() <= 0 then
-            return self:is_complete()
-        end
+        -- if ToDoList:get_time_remaining() <= 0 then
+        --     return self:is_complete()
+        -- end
 
         Ferret:wait(0.5)
     until self:is_complete()
@@ -217,9 +217,9 @@ function Mission:multi_recipe()
                     return self:is_complete()
                 end
 
-                if ToDoList:get_time_remaining() <= 0 then
-                    return self:is_complete()
-                end
+                -- if ToDoList:get_time_remaining() <= 0 then
+                --     return self:is_complete()
+                -- end
 
                 Ferret:wait(0.5)
             until WKSRecipeNotebook:is_ready() or self:is_complete()
@@ -240,9 +240,9 @@ function Mission:multi_recipe()
                             return self:is_complete()
                         end
 
-                        if ToDoList:get_time_remaining() <= 0 then
-                            return self:is_complete()
-                        end
+                        -- if ToDoList:get_time_remaining() <= 0 then
+                        --     return self:is_complete()
+                        -- end
 
                         Ferret:wait(0.5)
                     until WKSRecipeNotebook:is_ready() or self:is_complete()
