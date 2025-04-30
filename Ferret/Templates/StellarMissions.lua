@@ -14,7 +14,7 @@ MissionOrder = {
 StellarMissions = Ferret:extend()
 function StellarMissions:new()
     StellarMissions.super.new(self, i18n('templates.stellar_missions.name'))
-    self.template_version = Version(2, 5, 0)
+    self.template_version = Version(2, 6, 0)
 
     self.mission_list = MissionList()
     self.mission_order = MissionOrder.TopPriority

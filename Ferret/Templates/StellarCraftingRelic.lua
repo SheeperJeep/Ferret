@@ -9,7 +9,7 @@ require('Ferret/CosmicExploration/CosmicExploration')
 StellarCraftingRelic = Ferret:extend()
 function StellarCraftingRelic:new()
     StellarCraftingRelic.super.new(self, i18n('templates.stellar_crafting_relic.name'))
-    self.template_version = Version(0, 8, 0)
+    self.template_version = Version(0, 9, 0)
 
     self.job_order = {
         Jobs.Carpenter,
