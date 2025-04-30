@@ -65,51 +65,44 @@ end
 function StellarMissions:loop()
     WKSHud:wait_until_ready()
 
-    Ferret:wait(self.wait_timers.pre_open_mission_list)
-    WKSMission:open_basic_missions()
-    Ferret:wait(self.wait_timers.post_open_mission_list)
+    repeat
+        WKSMission:open()
+        Ferret:wait(0.2)
+    until WKSMission:is_ready()
 
     local available_missions = WKSMission:get_available_missions()
-    local mission_list = self.mission_list:get_overlap(available_missions)
+    local overlap = self.mission_list:get_overlap(available_missions)
 
-    if Table:count(mission_list.missions) <= 0 then
-        local classes = {}
-        for _, mission in pairs(self.mission_list.missions) do
-            if not Table:contains(classes, mission.class) then
-                table.insert(classes, mission.class)
-            end
-        end
+    if overlap:is_empty() then
         Logger:debug('Selecting mission to abandon')
+        local class = Table:random(self.mission_list:get_classes())
+        Logger:debug('Abandoning mission of class: ' .. class)
 
-        local class = Table:random(classes)
-        Logger:debug('Grabbing random mission with class: ' .. class)
-        local class_missions = available_missions:filter_by_class(class)
-        Logger:debug('    Generated list of count: ' .. Table:count(available_missions.mission))
-        local mission = class_missions:random()
+        local mission = available_missions:filter_by_class(class):random()
         if mission == nil then
+            Logger:debug('No mission found with class: ' .. class)
             mission = available_missions:random()
         end
 
         if mission == nil then
-            Logger:error('Error occured when trying to find a mission to abandon')
+            Logger:warn('Could not determine a mission to abandon.')
+            Logger:info('Configured missions: ' .. self.mission_list:count())
+            Logger:info('Available missions: ' .. available_missions:count())
             self:stop()
             return
         end
 
-        Logger:debug('mission: ' .. mission:to_string())
-
         mission:start()
-        Ferret:wait(self.wait_timers.post_mission_start)
+        WKSRecipeNotebook:wait_until_ready()
         mission:abandon()
-        Ferret:wait(self.wait_timers.post_mission_abandon)
         return
     else
         Logger:debug('Selecting mission to run')
         local mission = nil
         if self.mission_order == MissionOrder.TopPriority then
-            mission = mission_list:first()
+            mission = overlap:first()
         elseif self.mission_order == MissionOrder.Random then
-            mission = mission_list:random()
+            mission = overlap:random()
         end
 
         if mission == nil then

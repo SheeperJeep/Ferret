@@ -178,7 +178,8 @@ function StellarCraftingRelic:loop()
 
         if Synthesis:is_visible() then
             Synthesis:quit()
-            Ferret:wait(3)
+            Synthesis:wait_until_not_ready()
+            WKSMissionInfomation:wait_until_ready()
             mission:abandon()
         else
             Ferret:wait(3)

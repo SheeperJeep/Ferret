@@ -154,6 +154,23 @@ function MissionList:is_empty()
     return Table:is_empty(self.missions)
 end
 
+---@return string[]
+function MissionList:get_classes()
+    local classes = {}
+
+    for _, mission in ipairs(self.missions) do
+        if not Table:contains(classes, mission.class) then
+            table.insert(classes, mission.class)
+        end
+    end
+
+    return classes
+end
+
+function MissionList:count()
+    return Table:count(self.missions)
+end
+
 ---@return string
 function MissionList:to_string()
     local missions = {}
